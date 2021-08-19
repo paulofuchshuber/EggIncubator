@@ -21,7 +21,7 @@ def signup():
         name = request.form['name']
         pkID = request.form['email']
         password = request.form['password']
-        Timestamp = int(time.time())
+        Tstamp = int(time.time())
         
         table = dynamodb.Table('EggIncubator')
         
@@ -29,7 +29,7 @@ def signup():
                 Item={
         'name': name,
         'pkID': pkID,
-        'Timestamp' :  Timestamp,
+        'Tstamp' :  Tstamp,
         'password': password
             }
         )
