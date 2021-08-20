@@ -7,15 +7,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=5.0">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.0/chart.min.js" integrity="sha512-asxKqQghC1oBShyhiBwA+YgotaSYKxGP1rcSYTDrB0U6DxwlJjU59B67U8+5/++uFjcuVM8Hh5cokLjZlhm3Vg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    
+
     <title>Chart</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
 <body>
-    <canvas id="myChart" max-width="100" max-height="100"></canvas>
-<script>
-var ctx = document.getElementById('myChart').getContext('2d');
-var myChart = new Chart(ctx, {
+
+    <!--Header Start-->
+    <header>
+        <div class="left_area">
+            <h3> Egg Incubator </h3>
+        </div>
+        <div cçass="right_area">
+            <a href="#" class="logout_btn">Logout</a>
+        </div>
+    </header>
+    <!--Header End-->
+    <!--Sidebar Start-->
+    <div class="sidebar">
+        <center>
+            <img class="profile_image" src="static/img/chick.jpg">
+            <h4>Welcome</h4>
+        </center>
+        <a href="#"><i class="fas fa-desktop"></i><span>Dashboard</span></a>
+        <a href="#"><i class="fas fa-cogs"></i><span>Components</span></a>
+        <a href="#"><i class="fas fa-chart-area"></i><span>Charts</span></a>
+        <a href="#"><i class="fas fa-th"></i><span>Forms</span></a>
+        <a href="#"><i class="fas fa-sliders-h"></i><span>Settings</span></a>
+        <a href="#"><i class="fas fa-info-circle"></i><span>About</span></a>
+    </div>
+    <!--Sidebar End-->
+
+
+<div class="main">
+
+    <canvas id="myChart" max-width="800" max-height="800"></canvas>
+    <script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
     type: 'line',
     data: {
         labels: {{ labels | safe }},
@@ -42,14 +73,17 @@ var myChart = new Chart(ctx, {
         }]
     },
     options: {
+        responsive: true,
+        maintainAspectRatio: true,
         scales: {
             y: {
                 beginAtZero: true
             }
         }
     }
-});
+    });
 </script>
+</div>
 
 </body>
 </html>
