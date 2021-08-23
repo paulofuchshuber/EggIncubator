@@ -1,48 +1,95 @@
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, session, g
 import boto3
 import time
+from boto3.dynamodb.conditions import Key, Attr
 
 app = Flask(__name__)
+app.secret_key = 'somesecretkey'
 
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('EggIncubator')
 
-from boto3.dynamodb.conditions import Key, Attr
 
+
+class User:
+    def __init__(self, id, user, password):
+        self.id = id
+        self.name = name
+        self.password = password
+
+    def __repr__(self):
+        return f'<User: {self.user}>'
+
+
+@app.before_request
+def before_request():
+    g.user=None
+    print(g.user)
+    if 'user_id' in session:
+        g.user=User
+                  
 
 @app.route('/')
-def login():    
-    return render_template('login.html')
+def main():    
+    return redirect(url_for('login'))
 
-@app.route('/check',methods = ['post'])
-def check():
-    if request.method=='POST':
-        
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():    
+
+    for key in list(session.keys()):
+     session.pop(key)
+
+    if request.method == 'POST':
+         
         pkID = request.form['email']
         password = request.form['password']
-        
+
         table = dynamodb.Table('EggIncubator')
         response = table.query(
                 KeyConditionExpression=Key('pkID').eq(pkID)
         )
         items = response['Items']
-        name = items[0]['name']
-        print(items[0]['password'])
-        if password == items[0]['password']:
-            getPair=graph()
-            #return redirect(url_for('graph'))
-            return render_template("home.html", labels=getPair[0], values=getPair[1])
-            #return render_template("home.html",name = name)
-    return render_template("login.html")
-    
-    
-#@app.route('/home')
-#def home():
-#    return render_template('home.html')
+        #name = items[0]['name']
+        #print(items[0]['password'])
+        #print(items[0]['name'])
+        #print(len(items))
 
-#@app.route("/graph")
-def graph():
+        if len(items) == 0:     #se nao existir nenhum usuário correspondente...
+            return redirect(url_for('login'))
+    
+        if password == items[0]['password']:    #Se conseguiu logar...
+            session['user_id']=pkID
+
+            #print(items[0].get('name'))
+
+            User.id=items[0].get('pkID')
+            User.name=items[0].get('name')
+            User.password=items[0].get('password')
+            
+            #print(User.id)
+            #print(User.name)
+            #print(User.password)
+
+            return redirect(url_for('charts'))
+        return redirect(url_for('login'))
+        
+    return render_template('login.html')
+
+
+@app.route('/charts')
+def charts():
+    #print("####",g.user)
+    if g.user is None:
+        return redirect(url_for('login'))
+    else:
+        getPair=getGraphData()
+        return render_template("home.html", labels=getPair[0], values=getPair[1])
+
+
+
+def getGraphData():
     
     #Scan
     resp_Scan = table.scan(ProjectionExpression="Tstamp, Temperature")
@@ -52,6 +99,8 @@ def graph():
     ScanList=[]    
     for elem in resp_Scan['Items']:
         ScanList.append(elem.values())
+    
+    #ScanList=resp_Scan['Items']
 
     PairedList =[]
     for items in ScanList:
@@ -59,12 +108,7 @@ def graph():
         #print (len(items))
         if (len(items)) == 2:
             PairedList.append(list(items))
-    
-    #for i in PairedList:
-        #print (len(i))
-        #print (i[0],":",i[1])
-        
-    #print(type(PairedList))
+
     
     PairedList.sort()  #ordena as informações
 
