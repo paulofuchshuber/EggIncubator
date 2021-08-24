@@ -21,13 +21,12 @@ class User:
     def __repr__(self):
         return f'<User: {self.user}>'
 
-
 @app.before_request
 def before_request():
     g.user=None
-    print(g.user)
     if 'user_id' in session:
         g.user=User
+        print('###')
                   
 
 @app.route('/')
@@ -37,9 +36,9 @@ def main():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():    
-
+    g.user=None
     for key in list(session.keys()):
-     session.pop(key)
+        session.pop(key)
 
     if request.method == 'POST':
          
@@ -68,24 +67,40 @@ def login():
             User.name=items[0].get('name')
             User.password=items[0].get('password')
             
-            #print(User.id)
+            
+            print(User.id)
             #print(User.name)
             #print(User.password)
 
-            return redirect(url_for('charts'))
+            return redirect(url_for('home'))
         return redirect(url_for('login'))
         
     return render_template('login.html')
 
+@app.route('/home')
+def home():
+    if g.user is None:
+        return redirect(url_for('login'))
+    else:
+        #your code here
+        return render_template("home.html")   
+
+@app.route('/components')
+def components(): 
+    if g.user is None:
+        return redirect(url_for('login'))
+    else:
+        #your code here
+        return render_template("components.html")     
 
 @app.route('/charts')
 def charts():
-    #print("####",g.user)
+    print(g.user)
     if g.user is None:
         return redirect(url_for('login'))
     else:
         getPair=getGraphData()
-        return render_template("home.html", labels=getPair[0], values=getPair[1])
+        return render_template("charts.html", labels=getPair[0], values=getPair[1])
 
 
 
@@ -122,7 +137,29 @@ def getGraphData():
     return (labels,values)
     #return render_template("home.html", labels=labels, values=values)
 
+@app.route('/forms')
+def forms():   
+    if g.user is None:
+        return redirect(url_for('login'))
+    else:
+        #your code here    
+        return render_template("forms.html")   
 
+@app.route('/settings')
+def settings(): 
+    if g.user is None:
+        return redirect(url_for('login'))
+    else:
+        #your code here    
+        return render_template("settings.html")      
+
+@app.route('/about')
+def about():  
+    if g.user is None:
+        return redirect(url_for('login'))
+    else:
+        #your code here    
+        return render_template("about.html")   
 
 if __name__ == "__main__":
     app.debug = True
