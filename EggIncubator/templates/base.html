@@ -6,26 +6,89 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="static/css/style.css">
+    <!--<link rel="stylesheet" href="static/css/style.css">  OLD CSS NAVBAR-->
+
+    <!-- ===== CSS ===== -->
+    <link rel="stylesheet" href="static/css/styles.css">
+
+    <!--Icons-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- BOX ICONS -->
+    <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
 
     <title>Egg Incubator</title>
 
 </head>
 
-<body>
+<body id="body-pd">
     <!--Header Start-->
-    <header>
-        <div class="left_area">
-            <h3> Egg Incubator </h3>
+    <header class="header" id="header">
+        <div class="header__toggle">
+            <i class='bx bx-menu' id="header-toggle"></i>
         </div>
-        <div cçass="right_area">
-            <a href="{{ url_for('login') }}" class="logout_btn">Logout</a>
+
+
+        <div class="header__img">
+            <img src="static/img/perfil.jpg" alt="">
         </div>
     </header>
     <!--Header End-->
 
-    <!--Sidebar Start-->
+    <!--New Sidebar Start-->
+
+    <div class="l-navbar" id="nav-bar">
+
+        <nav class="nav">
+            <div>
+                <div class="nav__list">
+                    
+                    <a href="{{ url_for('home') }}" class="nav__link-bold">
+                        <i class='fas fa-egg'></i>
+                        <span class="nav__logo-name">Welcome {{g.user.name}}</span>
+                    </a>
+
+                    <a href="{{ url_for('home') }}" class="nav__link">
+                        <i class='fas fa-desktop'></i>
+                        <span class="nav__name">Home</span>
+                    </a>
+
+                    <a href="{{ url_for('components') }}" class="nav__link">
+                        <i class='fas fa-cogs'></i>
+                        <span class="nav__name">Components</span>
+                    </a>
+
+                    <a href="{{ url_for('charts') }}" class="nav__link">
+                        <i class='fas fa-chart-area'></i>
+                        <span class="nav__name">Charts</span>
+                    </a>
+
+                    <a href="{{ url_for('forms') }}" class="nav__link">
+                        <i class='fas fa-th nav__icon'></i>
+                        <span class="nav__name">Forms</span>
+                    </a>
+
+                    <a href="{{ url_for('settings') }}" class="nav__link">
+                        <i class='fas fa-sliders-h'></i>
+                        <span class="nav__name">Settings</span>
+                    </a>
+
+                    <a href="{{ url_for('about') }}" class="nav__link">
+                        <i class='fas fa-info-circle'></i>
+                        <span class="nav__name">About</span>
+                    </a>
+                </div>
+            </div>
+
+            <a href="{{ url_for('login') }}" class="nav__link-bold">
+                <i class='bx bx-log-out nav__icon'></i>
+                <span class="nav__name">Log Out</span>
+            </a>
+        </nav>
+    </div>
+    <!--New Sidebar End-->
+
+    <!--OLD SIDEBAR
     <div class="sidebar">
         <center>
             <img class="profile_image" src="static/img/chick.jpg">
@@ -38,13 +101,17 @@
         <a href="{{ url_for('settings') }}"><i class="fas fa-sliders-h"></i><span>Settings</span></a>
         <a href="{{ url_for('about') }}"><i class="fas fa-info-circle"></i><span>About</span></a>
     </div>
-    <!--Sidebar End-->
+    Sidebar End-->
 
     <div class="container">
+    </div>
+
+    <h1>
         {% block content %}
 
         {% endblock %}
-    </div>
+    </h1>
 
+    <script src="static/js/main.js"></script>
 </body>
-BELOWWWWWWWWWWWWW
+</html>

@@ -50,10 +50,6 @@ def login():
                 KeyConditionExpression=Key('pkID').eq(pkID)
         )
         items = response['Items']
-        #name = items[0]['name']
-        #print(items[0]['password'])
-        #print(items[0]['name'])
-        #print(len(items))
 
         if len(items) == 0:     #se nao existir nenhum usuário correspondente...
             return redirect(url_for('login'))
@@ -107,23 +103,17 @@ def charts():
 def getGraphData():
     
     #Scan
-    resp_Scan = table.scan(ProjectionExpression="Tstamp, Temperature")
+    resp_Scan = table.scan(ProjectionExpression="Tstamp, Temperature")['Items']
     
-    #print(resp_Scan['Items'])
-    
+
     ScanList=[]    
-    for elem in resp_Scan['Items']:
+    for elem in resp_Scan:
         ScanList.append(elem.values())
     
-    #ScanList=resp_Scan['Items']
-
     PairedList =[]
     for items in ScanList:
-        #print (items)
-        #print (len(items))
         if (len(items)) == 2:
             PairedList.append(list(items))
-
     
     PairedList.sort()  #ordena as informações
 
@@ -135,7 +125,6 @@ def getGraphData():
         values.append(row[1])
        
     return (labels,values)
-    #return render_template("home.html", labels=labels, values=values)
 
 @app.route('/forms')
 def forms():   
