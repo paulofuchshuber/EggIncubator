@@ -43,7 +43,7 @@
             <div>
                 <div class="nav__list">
                     
-                    <a href="{{ url_for('home') }}" class="nav__link-bold">
+                    <a class="nav__link-bold">
                         <i class='fas fa-egg'></i>
                         <span class="nav__logo-name">Welcome {{g.user.name}}</span>
                     </a>
@@ -104,14 +104,14 @@
     Sidebar End-->
 
     <div class="container">
-    </div>
 
-    <h1>
         {% block content %}
 
         {% endblock %}
-    </h1>
+
+    </div>
 
     <script src="static/js/main.js"></script>
+    
 </body>
 </html>
