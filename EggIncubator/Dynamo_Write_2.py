@@ -85,7 +85,7 @@ def main():
     obj = MyDb()
     Temperature , Humidity = obj.sensor_value()
     if now is not None:   #alterar para: se dia e hora for nulo, obter dia e hora, talvez em while...
-        obj.put(pkID="Teste", Tstamp=now, Temperature=str(round(Temperature,3)), Humidity=str(round(Humidity,3)))
+        obj.put(pkID="Teste2", Tstamp=now, Temperature=str(round(Temperature,3)), Humidity=str(round(Humidity,3)))
         counter = counter + 1
         print("{0:0} - Uploaded Sample on Cloud T:{1:0.1f},H:{2:0.1f} ".format(counter-1, Temperature, Humidity))
 

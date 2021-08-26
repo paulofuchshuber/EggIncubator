@@ -24,7 +24,7 @@ class User:
 @app.before_request
 def before_request():
     g.user=None
-    if 'user_id' in session:
+    if 'user_id' in session: 
         g.user=User
         print('###')
                   
@@ -95,15 +95,16 @@ def charts():
     if g.user is None:
         return redirect(url_for('login'))
     else:
+        #your code here  
         getPair=getGraphData()
-        return render_template("charts.html", labels=getPair[0], values=getPair[1])
+        return render_template("charts.html", labels=getPair[0], values=getPair[1], valuesAgain=getPair[2])
 
 
 
 def getGraphData():
     
     #Scan
-    resp_Scan = table.scan(ProjectionExpression="Tstamp, Temperature")['Items']
+    resp_Scan = table.scan(ProjectionExpression="Tstamp, Temperature, Humidity")['Items']
     
 
     ScanList=[]    
@@ -112,19 +113,21 @@ def getGraphData():
     
     PairedList =[]
     for items in ScanList:
-        if (len(items)) == 2:
+        if (len(items)) == 3:
             PairedList.append(list(items))
     
     PairedList.sort()  #ordena as informações
 
     labels = []
     values = []
+    valuesAgain=[]
     for row in PairedList:
         #print (row[0],":",row[1])
         labels.append(str(row[0]))
         values.append(row[1])
+        valuesAgain.append(row[2])
        
-    return (labels,values)
+    return (labels,values,valuesAgain)
 
 @app.route('/forms')
 def forms():   
