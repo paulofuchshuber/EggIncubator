@@ -14,7 +14,7 @@ $pip install awscli
 
 $aws configure	#put your credentials here
 
-$set FLASK_APP=filename.py
+$set FLASK_APP=app.py
 
 $flask run
 
