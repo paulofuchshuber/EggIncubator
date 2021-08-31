@@ -18,6 +18,8 @@ $set FLASK_APP=app.py
 
 $pip install Pillow
 
+$pip install opencv-python
+
 $CD EggIncubator
 
 $flask run --host=0.0.0.0
