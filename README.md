@@ -1,6 +1,6 @@
 # EggIncubator
 
-prompt-command (windows)
+prompt-command (Windows)
 
 $py -m venv env #install virtual environment
 
@@ -21,3 +21,7 @@ $flask run
 #or
 
 $flask run --host=0.0.0.0
+
+terminal (Linux)
+
+$git clone https://github.com/phfuks/EggIncubator
