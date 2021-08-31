@@ -2,7 +2,7 @@
 
 # Prompt-Command (Windows)
 
-$py -m venv env # install virtual environment
+$py -m venv env #install virtual environment
 
 $env\Scripts\activate	#activate environment
 
