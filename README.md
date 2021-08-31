@@ -48,6 +48,8 @@ $sudo apt-get install libcblas-dev libhdf5-dev libhdf5-serial-dev libatlas-base-
 
 $pip install Flask-BasicAuth
 
+$pip install Pillow
+
 $CD EggIncubator
 
 $flask run --host=0.0.0.0
