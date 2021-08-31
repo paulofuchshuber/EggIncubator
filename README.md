@@ -1,6 +1,6 @@
 # EggIncubator
 
-prompt-command (Windows)
+Prompt-Command (Windows)
 
 $py -m venv env #install virtual environment
 
@@ -22,6 +22,17 @@ $flask run
 
 $flask run --host=0.0.0.0
 
-terminal (Linux)
+Terminal (Raspberry Pi OS)
 
 $git clone https://github.com/phfuks/EggIncubator
+
+$sudo pip install virtualenv #install virtual environment
+
+$python3 -m venv ./venv #create virtual envoironment
+
+$source ./venv/bin/activate
+
+$pip install boto3
+
+$pip install awscli
+
