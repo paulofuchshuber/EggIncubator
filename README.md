@@ -50,6 +50,8 @@ $pip install Flask-BasicAuth
 
 $pip install Pillow
 
+$pip install picamera
+
 $CD EggIncubator
 
 $flask run --host=0.0.0.0
