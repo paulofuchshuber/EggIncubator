@@ -16,6 +16,8 @@ $aws configure	#put your credentials here
 
 $set FLASK_APP=app.py
 
+$pip install Pillow
+
 $CD EggIncubator
 
 $flask run --host=0.0.0.0
