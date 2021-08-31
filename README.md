@@ -1,6 +1,6 @@
 # EggIncubator
 
-Prompt-Command (Windows)
+# Prompt-Command (Windows)
 
 $py -m venv env #install virtual environment
 
@@ -16,13 +16,9 @@ $aws configure	#put your credentials here
 
 $set FLASK_APP=app.py
 
-$flask run
-
-#or
-
 $flask run --host=0.0.0.0
 
-Terminal (Raspberry Pi OS)
+# Terminal (Raspberry Pi OS)
 
 $git clone https://github.com/phfuks/EggIncubator
 
@@ -32,7 +28,14 @@ $python3 -m venv ./venv #create virtual envoironment
 
 $source ./venv/bin/activate
 
+$pip install Flaskaws configure
+
 $pip install boto3
 
 $pip install awscli
 
+$aws configure	#put your credentials here
+
+$set FLASK_APP=app.py
+
+$flask run --host=0.0.0.0
