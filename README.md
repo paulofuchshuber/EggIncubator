@@ -31,7 +31,7 @@ $source ./venv/bin/activate
 $pip install Flask  
 $pip install boto3  
 $pip install awscli  
-$aws configure	#put your credentials her
+$aws configure	#put your credentials here  
 $pip install opencv-python  
 $pip install Flask-BasicAuth  
 $pip install Pillow  
