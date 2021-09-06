@@ -56,6 +56,12 @@ $pip install Pillow
 
 $pip install picamera
 
+#DHT sensor library:
+$git clone https://github.com/adafruit/Adafruit_Python_DHT.git
+$cd Adafruit_Python_DHT
+$sudo apt-get install build-essential python-dev
+$python setup.py install
+
 $CD EggIncubator
 
 $flask run --host=0.0.0.0
