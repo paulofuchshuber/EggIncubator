@@ -12,6 +12,7 @@ $pip install awscli
 $aws configure	#you have to put your credentials here  
 $pip install Pillow  
 $pip install opencv-python  
+$pip install websockets
 
 ## Run
 
@@ -38,6 +39,7 @@ $pip install Pillow
 $pip install picamera  
 $sudo apt-get install libatlas-base-dev  
 $sudo apt-get install libcblas-dev libhdf5-dev libhdf5-serial-dev libatlas-base-dev libjasper-dev libqtgui4 libqt4-test  
+$pip install websockets  
 
 #### DHT Sensor Library:  
 $git clone https://github.com/adafruit/Adafruit_Python_DHT.git  
