@@ -26,6 +26,8 @@ $flask run --host=0.0.0.0
 
 # Terminal (Raspberry Pi OS)
 
+## Requirements:
+
 $git clone https://github.com/phfuks/EggIncubator
 
 $sudo pip install virtualenv #install virtual environment
@@ -56,7 +58,7 @@ $pip install Pillow
 
 $pip install picamera
 
-
+[//]: # (This is a comment.)
 #DHT sensor library:  
 $git clone https://github.com/adafruit/Adafruit_Python_DHT.git  
 $cd Adafruit_Python_DHT  
