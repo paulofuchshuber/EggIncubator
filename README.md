@@ -62,7 +62,7 @@ $sudo apt-get install libatlas-base-dev
 
 $sudo apt-get install libcblas-dev libhdf5-dev libhdf5-serial-dev libatlas-base-dev libjasper-dev libqtgui4 libqt4-test
 
-### DHT Sensor Library:  
+#### DHT Sensor Library:  
 $git clone https://github.com/adafruit/Adafruit_Python_DHT.git  
 $cd Adafruit_Python_DHT  
 $sudo apt-get install build-essential python-dev  
