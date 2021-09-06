@@ -9,9 +9,9 @@ $env\Scripts\activate	#activate environment
 $pip install Flask  
 $pip install boto3  
 $pip install awscli  
+$aws configure	#put your credentials here  
 $pip install Pillow  
 $pip install opencv-python  
-$aws configure	#put your credentials here (awscli)  
 
 ## Run
 
@@ -31,7 +31,7 @@ $source ./venv/bin/activate
 $pip install Flask  
 $pip install boto3  
 $pip install awscli  
-$aws configure	#put your credentials here (awscli)  
+$aws configure	#put your credentials her
 $pip install opencv-python  
 $pip install Flask-BasicAuth  
 $pip install Pillow  
