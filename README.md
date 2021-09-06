@@ -57,7 +57,7 @@ $pip install Pillow
 $pip install picamera
 
 
-#DHT sensor library:
+#DHT sensor library:  
 $git clone https://github.com/adafruit/Adafruit_Python_DHT.git
 
 $cd Adafruit_Python_DHT
