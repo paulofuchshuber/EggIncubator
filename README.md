@@ -13,6 +13,7 @@ $aws configure	#you have to put your credentials here
 $pip install Pillow  
 $pip install opencv-python  
 $pip install flask-socketio  
+$pip install psutil
 
 ## Run
 
