@@ -4,7 +4,7 @@
 
 ## Requirements:
 
-$py -m venv env #install virtual environment  
+$py -m venv env #create virtual environment  
 $env\Scripts\activate	#activate environment  
 $pip install Flask  
 $pip install boto3  
