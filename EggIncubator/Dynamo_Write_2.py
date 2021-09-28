@@ -66,7 +66,7 @@ class MyDb(object):
     @staticmethod
     def sensor_value():
 
-        pin = 4
+        pin = 18
         sensor = Adafruit_DHT.DHT22
 
         humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
