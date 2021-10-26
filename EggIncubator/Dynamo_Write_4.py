@@ -97,7 +97,7 @@ def main():
 
     deltaTemp=abs(Temperature-lastTemp)
     #print (deltaTemp)
-    if (now is not None) and (deltaTemp<2.5) and (Temperature < 50) and (Humidity <=100):   #alterar para: se dia e hora for nulo, obter dia e hora, talvez em while...
+    if (now is not None) and (deltaTemp<2.5) and (Temperature < 50) and (Humidity <=100) and (Temperature > 0):   #alterar para: se dia e hora for nulo, obter dia e hora, talvez em while...
         obj.put(pkID="teste251021", Tstamp=now, Temperature=str(round(Temperature,3)), Humidity=str(round(Humidity,3)))
         counter = counter + 1
         print("{0:0} - Uploaded Sample on Cloud T:{1:0.1f},H:{2:0.1f} ".format(counter-1, Temperature, Humidity))
@@ -107,7 +107,7 @@ def main():
     
     deltaTempExt=abs(TemperatureExt-lastTempExt)
     #print (deltaTempExt)
-    if (now is not None) and (deltaTempExt<2) and (TemperatureExt < 50) and (HumidityExt <=100):   #alterar para: se dia e hora for nulo, obter dia e hora, talvez em while...
+    if (now is not None) and (deltaTempExt<2) and (TemperatureExt < 50) and (HumidityExt <=100) and (TemperatureExt > 0):   #alterar para: se dia e hora for nulo, obter dia e hora, talvez em while...
         obj.putExt(pkID="testeEXT251021", Tstamp=now, TemperatureExt=str(round(TemperatureExt,3)), HumidityExt=str(round(HumidityExt,3)))
         #counter = counter + 1
         print("{0:0} - Uploaded Sample on Cloud T (Ext):{1:0.1f},H:{2:0.1f} ".format(counter-1, TemperatureExt, HumidityExt))
