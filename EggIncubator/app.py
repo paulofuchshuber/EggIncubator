@@ -101,7 +101,7 @@ def charts():
         return redirect(url_for('login'))
     else:
         #your code here  
-        getPair=getGraphData()
+        getPair=queryData()
         return render_template("charts.html", labels=getPair[0], values=getPair[1], valuesAgain=getPair[2])
 
 
@@ -110,7 +110,6 @@ def getGraphData():
     
     #Scan
     resp_Scan = table.scan(ProjectionExpression="Tstamp, Temperature, Humidity")['Items']
-    
 
     ScanList=[]    
     for elem in resp_Scan:
@@ -134,7 +133,6 @@ def getGraphData():
         valuesAgain.append(row[2])
     
 
-
     return (labels,values,valuesAgain)
 
 @app.route('/forms')
@@ -143,7 +141,34 @@ def forms():
         return redirect(url_for('login'))
     else:
         #your code here    
+        getQuery=queryData()
+        
         return render_template("forms.html")   
+
+def queryData():
+    resp_Query = table.query(KeyConditionExpression=Key('pkID').eq('teste261021'))['Items']
+    
+    Tstamps=[]
+    Temperatures=[]
+    Humidities=[]
+
+    for elem in resp_Query:
+        Tstamps.append(str(datetime.datetime.fromtimestamp(elem.get('Tstamp'))))
+        Temperatures.append(elem.get('Temperature'))    
+        Humidities.append(elem.get('Humidity'))    
+
+    
+    print("Tstamps: ")
+    for eachItem in Tstamps:
+        print(eachItem)
+    print("Temperatures: ")        
+    for eachItem in Temperatures:
+        print(eachItem)
+    print("Humidities: ")
+    for eachItem in Humidities:
+        print(eachItem)
+
+    return (Tstamps,Temperatures,Humidities)
 
 @app.route('/settings')
 def settings(): 
