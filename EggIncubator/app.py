@@ -145,7 +145,7 @@ def forms():
         return render_template("forms.html", labels=getPair[0], values=getPair[1], valuesAgain=getPair[2])
 
 def queryData():
-    resp_Query = table.query(KeyConditionExpression=Key('pkID').eq('teste271021'))['Items']
+    resp_Query = table.query(KeyConditionExpression=Key('pkID').eq('4teste281021'))['Items']
     
     Tstamps=[]
     Temperatures=[]

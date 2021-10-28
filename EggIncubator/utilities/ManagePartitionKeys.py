@@ -17,23 +17,23 @@ def callManager():
 
 
 
-def table_insert(List):
+def table_insert(keysList):
 
     table = dynamodb.Table('EggIncubator')
     response = table.put_item(
        Item={
             'pkID': 'KeyManager',
             'Tstamp': 1,
-            'List': List
+            'List': keysList
         }
     )
     return response
 
 
 def main():
-    keysList=['Teste','Teste2','Teste3','Teste4','Teste5','teste1PID', 'teste231021','teste251021','testeEXT251021','teste261021','teste281021']
+    keysList=['Teste','Teste2','Teste3','Teste4','Teste5','teste1PID', 'teste231021','teste251021','testeEXT251021','teste261021','teste281021','2teste281021']
     otherList=['testeEXT251021','testeEXT261021','testeEXT281021']
-
+    #'3teste281021'
     item_insert = table_insert(keysList)
     
     print("Put  succeeded:")

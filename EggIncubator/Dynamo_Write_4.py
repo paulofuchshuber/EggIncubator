@@ -4,12 +4,16 @@ try:
     import datetime
     import time
     import boto3
+    from boto3.dynamodb.conditions import Key
     import Adafruit_DHT
     import threading
     print("All Modules Loaded ...... ")
 except Exception as e:
     print("Error {}".format(e))
 
+
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('EggIncubator')
 
 class MyDb(object):
 
@@ -77,18 +81,33 @@ class MyDb(object):
         else:
             print('Failed to get reading. Try again!')
         return temperature, humidity
+
+def table_insert(keysList):
+
+    table = dynamodb.Table('EggIncubator')
+    response = table.put_item(
+       Item={
+            'pkID': 'KeyManager',
+            'Tstamp': 1,
+            'List': keysList
+        }
+    )
+    #print("inserted")
+    return response    
     
 
 def main():
     global counter
     global lastTemp
     global lastTempExt
-    
+    global partitionKey
+
+
     pinDHT1=23
     pinDHT2=24
     
     now = int(time.time())
-    threading.Timer(interval=45, function=main).start()
+    threading.Timer(interval=30, function=main).start()
     obj = MyDb()
     
     Temperature , Humidity = obj.sensor_value(pinDHT1) 
@@ -98,23 +117,45 @@ def main():
     deltaTemp=abs(Temperature-lastTemp)
     #print (deltaTemp)
     if (now is not None) and (deltaTemp<2.5) and (Temperature < 50) and (Humidity <=100) and (Temperature > 0):   #alterar para: se dia e hora for nulo, obter dia e hora, talvez em while...
-        obj.put(pkID="teste271021", Tstamp=now, Temperature=str(round(Temperature,3)), Humidity=str(round(Humidity,3)))
+        obj.put(pkID=partitionKey, Tstamp=now, Temperature=str(round(Temperature,3)), Humidity=str(round(Humidity,3)))
         counter = counter + 1
         print("{0:0} - Uploaded Sample on Cloud T:{1:0.1f},H:{2:0.1f} ".format(counter-1, Temperature, Humidity))
     lastTemp=Temperature
     
-    #now = int(time.time())
-    
+
     deltaTempExt=abs(TemperatureExt-lastTempExt)
     #print (deltaTempExt)
     if (now is not None) and (deltaTempExt<2) and (TemperatureExt < 50) and (HumidityExt <=100) and (TemperatureExt > 0):   #alterar para: se dia e hora for nulo, obter dia e hora, talvez em while...
-        obj.putExt(pkID="testeEXT271021", Tstamp=now, TemperatureExt=str(round(TemperatureExt,3)), HumidityExt=str(round(HumidityExt,3)))
+        obj.putExt(pkID=partitionKey+'EXT', Tstamp=now, TemperatureExt=str(round(TemperatureExt,3)), HumidityExt=str(round(HumidityExt,3)))
         #counter = counter + 1
         print("{0:0} - Uploaded Sample on Cloud T (Ext):{1:0.1f},H:{2:0.1f} ".format(counter-1, TemperatureExt, HumidityExt))
     lastTempExt=TemperatureExt
     
     
+def checkPartitionKeys():
+    existence=0
+    manager = table.query(KeyConditionExpression=Key('pkID').eq('KeyManager'))['Items']
+    
+    #print (manager)
+    managerList=[]
+    for elem in manager:
+        managerList = elem.get('List')
 
+    for eachElem in managerList:
+        if (partitionKey == eachElem):
+            #print('true')
+            existence=1
+
+    if (existence==0):
+        managerList.append(partitionKey)
+        item_insert = table_insert(managerList)
+        print('pkID added to list')
+        #print(item_insert)        
+
+    elif (existence ==1):
+        print('Continued on same pkId')
+
+    print(managerList)
 
 if __name__ == "__main__":
     global counter
@@ -123,6 +164,11 @@ if __name__ == "__main__":
     global lastTempExt
     lastTemp=0
     lastTempExt=0
+    global partitionKey
+    partitionKey='4teste281021'
+
+    checkPartitionKeys()
+
     main()
 
 
