@@ -14,6 +14,7 @@ $pip install Pillow
 $pip install opencv-python  
 $pip install flask-socketio  
 $pip install psutil
+$pip install flask-wtf
 
 ## Run
 
