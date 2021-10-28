@@ -10,6 +10,19 @@
 
     <title>Charts</title>
 
+    <style>
+    .dropDown {
+        display:inline-block;
+        position: relative;
+     }
+    .chartArea {
+        width:85%;
+        display:inline-block;
+        position: relative;
+        left: -60px;
+     }
+    </style>
+
 </head>
 
 {% extends 'base.html' %}
@@ -21,6 +34,24 @@
 
 <div class="main">
 
+        <h3>
+        <div class="dropDown">
+        Select Incubator: 
+        <select id="car-type">
+            <option>-</option>
+            <option>Heater 1</option>
+            <option>Heater 2</option>
+            <option>Heater 3</option>
+            <option>Heater 4</option>
+            <option>Heater 5</option>
+            <option>Heater 6</option>
+            <option>Heater 7</option>
+            <option>Heater 8</option>
+        </select>
+        </div>
+        </h3>
+
+    <div class="chartArea">  
     <canvas id="myChart" max-width="100" max-height="100"></canvas>
     <script>
     var ctx = document.getElementById('myChart').getContext('2d');
@@ -62,7 +93,9 @@
         }
     }
     });
-</script>
+    </script>
+    </div>
+
 </div>
 
 {% endblock %}

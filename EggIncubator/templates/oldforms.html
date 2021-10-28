@@ -1,0 +1,43 @@
+<head>
+    
+    <title>Forms</title>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+    $(function(){
+        $("#to").datepicker({ dateFormat: 'dd/mm/yy' });
+        $("#from").datepicker({ dateFormat: 'dd/mm/yy' }).bind("change",function(){
+            var minValue = $(this).val();
+            minValue = $.datepicker.parseDate("dd/mm/yy", minValue);
+            minValue.setDate(minValue.getDate()+1);
+            $("#to").datepicker( "option", "minDate", minValue );
+        })
+    });
+    </script>
+
+</head>
+
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+    <div class='main'>
+        <h1>
+            <br />
+            From: <input type="text" id="from">
+            To: <input type="text" id="to">
+            
+        </h1>
+        
+
+    </div>
+
+
+{% endblock %}
+
+</html>
