@@ -10,7 +10,7 @@ def callManager():
     manager = table.query(KeyConditionExpression=Key('pkID').eq('KeyManager'))['Items']
     managerList=[]
     for elem in manager:
-        managerList.append(elem.get('List'))   
+        managerList = elem.get('List')  
 
         return (managerList)
 
@@ -34,10 +34,10 @@ def main():
     keysList=['Teste','Teste2','Teste3','Teste4','Teste5','teste1PID', 'teste231021','teste251021','testeEXT251021','teste261021','teste281021','2teste281021']
     otherList=['testeEXT251021','testeEXT261021','testeEXT281021']
     #'3teste281021'
-    item_insert = table_insert(keysList)
+    #item_insert = table_insert(keysList)
     
     print("Put  succeeded:")
-    print(item_insert)
+    #print(item_insert)
     
     print("")
     print("Now lets get it:")

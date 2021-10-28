@@ -3,6 +3,8 @@ import boto3
 import time
 import datetime
 from boto3.dynamodb.conditions import Key, Attr
+from flask_wtf import FlaskForm
+from wtforms import SelectField
 
 app = Flask(__name__)
 app.secret_key = 'somesecretkey'
@@ -94,15 +96,39 @@ def components():
         #your code here
         return render_template("components.html")     
 
-@app.route('/charts')
+class chartsForm(FlaskForm):
+    selectChart = SelectField('Plot: ', choices=[])
+
+def callManager():
+    manager = table.query(KeyConditionExpression=Key('pkID').eq('KeyManager'))['Items']
+    managerList=[]
+    for elem in manager:
+        managerList = elem.get('List')  
+        return (managerList)    
+
+@app.route('/charts', methods=['GET','POST'])
 def charts():
     print(g.user)
     if g.user is None:
         return redirect(url_for('login'))
     else:
         #your code here  
-        getPair=queryData()
-        return render_template("charts.html", labels=getPair[0], values=getPair[1], valuesAgain=getPair[2])
+        lastPartitionKey=callManager()[-1]
+        getPair=queryData(lastPartitionKey)
+
+        form = chartsForm()
+        form.selectChart.choices = callManager()        #form.selectChart.choices = [for choice in callManager()]
+        if request.method == 'POST':
+            #print("0000000000", form.selectChart.data)
+            #print(type(form.selectChart.data))
+            getPair = queryData(str(form.selectChart.data))
+
+
+        
+
+
+
+        return render_template("charts.html", labels=getPair[0], values=getPair[1], valuesAgain=getPair[2], form=form)
 
 
 
@@ -144,8 +170,8 @@ def forms():
         getPair=queryData()
         return render_template("forms.html", labels=getPair[0], values=getPair[1], valuesAgain=getPair[2])
 
-def queryData():
-    resp_Query = table.query(KeyConditionExpression=Key('pkID').eq('4teste281021'))['Items']
+def queryData(partitionKey):
+    resp_Query = table.query(KeyConditionExpression=Key('pkID').eq(partitionKey))['Items']
     
     Tstamps=[]
     Temperatures=[]

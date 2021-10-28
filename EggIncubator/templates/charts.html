@@ -34,10 +34,10 @@
 
 <div class="main">
 
-        <h3>
+       <!-- <h3>
         <div class="dropDown">
         Select Incubator: 
-        <select id="car-type">
+        <select id="selectpkID">
             <option>-</option>
             <option>Heater 1</option>
             <option>Heater 2</option>
@@ -49,6 +49,14 @@
             <option>Heater 8</option>
         </select>
         </div>
+        </h3>-->
+
+        <h3>
+            <form method="POST">
+                {{ form.csrf_token }}
+                {{ form.selectChart }}
+                <input type="submit">
+            </form>
         </h3>
 
     <div class="chartArea">  
