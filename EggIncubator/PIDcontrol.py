@@ -22,6 +22,13 @@ def read_temp_raw():
  
 def read_temp():
     lines = read_temp_raw()
+    #lines = []  
+    #print(lines)
+    #print(lines[0].strip()[-3:])
+
+    if lines == []:
+        print("ERROR")
+        return setpoint
     while lines[0].strip()[-3:] != 'YES':
         time.sleep(0.2)
         lines = read_temp_raw()
@@ -68,7 +75,7 @@ try:
             I=potMax-50
         D = (lastTemp-tempRead)*kD
         PID = P + I + D 
-        print(round(PID,2))
+        #print(round(PID,2))
         if (PID >= potMax-50):  #limitar potencia max
             PID = potMax-50
         elif (PID <= -50):  #limitar potencia minima
@@ -81,5 +88,6 @@ try:
             
 except KeyboardInterrupt:
     pass
+p.ChangeDutyCycle(0)
 p.stop()
 GPIO.cleanup()
