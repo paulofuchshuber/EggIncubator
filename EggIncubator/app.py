@@ -167,8 +167,8 @@ def forms():
         return redirect(url_for('login'))
     else:
         #your code here    
-    
-        return render_template("forms.html")
+        getPair=queryData()
+        return render_template("forms.html", labels=getPair[0], values=getPair[1], valuesAgain=getPair[2])
 
 def queryData(partitionKey):
     resp_Query = table.query(KeyConditionExpression=Key('pkID').eq(partitionKey))['Items']

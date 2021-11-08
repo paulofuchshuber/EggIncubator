@@ -42,13 +42,16 @@ def read_temp():
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
-GPIO.setup(32,GPIO.OUT)
 
+GPIO.setup(32,GPIO.OUT) #heater pin 
 p = GPIO.PWM(32,5)
 p.start(0)
 
+#GPIO.setup(37,GPIO.OUT) #humidif. pin 
+
+
 tempRead=0
-setpoint = 38
+setpoint = 38  #em graus celsius
 kP = 50
 kI = 0.2
 kD = 0.2

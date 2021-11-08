@@ -100,6 +100,7 @@ def main():
     global counter
     global lastTemp
     global lastTempExt
+    global lastHumid
     global partitionKey
 
 
@@ -107,7 +108,7 @@ def main():
     pinDHT2=24
     
     now = int(time.time())
-    threading.Timer(interval=30, function=main).start()
+    threading.Timer(interval=60, function=main).start()
     obj = MyDb()
     
     Temperature , Humidity = obj.sensor_value(pinDHT1) 
@@ -115,12 +116,14 @@ def main():
     TemperatureExt , HumidityExt = obj.sensor_value(pinDHT2)
 
     deltaTemp=abs(Temperature-lastTemp)
+    deltaHumid=abs(Humidity-lastHumid)
     #print (deltaTemp)
-    if (now is not None) and (deltaTemp<2.5) and (Temperature < 50) and (Humidity <=100) and (Temperature > 0):   #alterar para: se dia e hora for nulo, obter dia e hora, talvez em while...
+    if (now is not None) and (deltaTemp<2.5) and (Temperature < 50) and (Humidity <=100) and (Temperature > 0) and (deltaHumid<5):   #alterar para: se dia e hora for nulo, obter dia e hora, talvez em while...
         obj.put(pkID=partitionKey, Tstamp=now, Temperature=str(round(Temperature,3)), Humidity=str(round(Humidity,3)))
         counter = counter + 1
         print("{0:0} - Uploaded Sample on Cloud T:{1:0.1f},H:{2:0.1f} ".format(counter-1, Temperature, Humidity))
     lastTemp=Temperature
+    lastHumid=Humidity
     
 
     deltaTempExt=abs(TemperatureExt-lastTempExt)
@@ -164,8 +167,10 @@ if __name__ == "__main__":
     global lastTempExt
     lastTemp=0
     lastTempExt=0
+    global lastHumid
+    lastHumid=0
     global partitionKey
-    partitionKey='4teste281021'
+    partitionKey='humidityTest2'
 
     checkPartitionKeys()
 
