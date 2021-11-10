@@ -69,6 +69,7 @@
         labels: {{ labels | safe }},
         datasets: [{
             label: 'Temperature',
+            //labels: {{ labels | safe }},
             data: {{ values | safe }},
             backgroundColor: [
                 'rgba(255, 159, 64, 0.2)'
@@ -80,6 +81,7 @@
         },
         {
             label: 'Humidity',
+            //labels: {{ labels2 | safe }},
             data: {{ valuesAgain | safe }},
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)'

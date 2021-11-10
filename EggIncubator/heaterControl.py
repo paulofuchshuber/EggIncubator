@@ -44,54 +44,56 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 
 GPIO.setup(32,GPIO.OUT) #heater pin 
-p = GPIO.PWM(32,5)
+p = GPIO.PWM(32,60)
 p.start(0)
 
 #GPIO.setup(37,GPIO.OUT) #humidif. pin 
 
-
-tempRead=0
 setpoint = 38  #em graus celsius
-kP = 50
-kI = 0.2
-kD = 0.2
-PID = 0
-P = 0
-I = 0
-D = 0
+kP = 60
+kI = 0.1
+kD = 0.5
 potMax=90
 
 p.ChangeDutyCycle(0)
 
-try:
-    print("PWM Gerado!")
-    while(1):
-        delay.sleep(0.1)
-        lastTemp=tempRead
-        tempRead=read_temp()
+def main():
+    #print("PWM Gerado!")
+    global lastTemp
+    global tempRead
+    global I
 
-        #PID Cicle
-        error = setpoint - tempRead
-        P = error*kP
-        I += error*kI
-        if (I >= potMax-50): #quando esta esquentando (inicialmente frio) nao acumular muito I
-            I=potMax-50
-        D = (lastTemp-tempRead)*kD
-        PID = P + I + D
-        print("P:",round(P,2)," I:",round(I,2)," D:",round(D,2))
-        #print(round(PID,2))
-        if (PID >= potMax-50):  #limitar potencia max
-            PID = potMax-50
-        elif (PID <= -50):  #limitar potencia minima
-            PID = -50
-        p.ChangeDutyCycle(PID+50) #p.ChangeDutyCycle(PID+X) x=50 
-        #print("PID: ",round(PID,2),"I: ",round(I,2))
-        print("Temp: ",round(tempRead,2),"C  Erro: ", round(error,2),"C  Potencia: ",round(PID+50,2),"%") 
+    delay.sleep(0.1)
+    lastTemp=tempRead
+    tempRead=read_temp()
+
+    #PID Cicle
+    error = setpoint - tempRead
+    P = error*kP
+    I += error*kI
+    if (I >= potMax-50): #quando esta esquentando (inicialmente frio) nao acumular muito I
+        I=potMax-50
+    D = (lastTemp-tempRead)*kD
+    PID = P + I + D
+    print("P:",round(P,2)," I:",round(I,2)," D:",round(D,2))
+    #print(round(PID,2))
+    if (PID >= potMax-50):  #limitar potencia max
+        PID = potMax-50
+    elif (PID <= -50):  #limitar potencia minima
+        PID = -50
+    p.ChangeDutyCycle(PID+50) #p.ChangeDutyCycle(PID+X) x=50 
+    #print("PID: ",round(PID,2),"I: ",round(I,2))
+    print("Temp: ",round(tempRead,2),"C  Erro: ", round(error,2),"C  Potencia: ",round(PID+50,2),"%") 
         
         
-            
-except KeyboardInterrupt:
-    pass
-p.ChangeDutyCycle(0)
-p.stop()
-GPIO.cleanup()
+if __name__ == "__main__":
+    global lastTemp
+    global tempRead
+    global I
+    lastTemp=0
+    tempRead=0
+    I = 0
+
+    while(1):
+        main()
+    

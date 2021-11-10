@@ -123,12 +123,8 @@ def charts():
             #print(type(form.selectChart.data))
             getPair = queryData(str(form.selectChart.data))
 
-
+        return render_template("charts.html", labels=getPair[0],values=getPair[1], valuesAgain=getPair[2], form=form)
         
-
-
-
-        return render_template("charts.html", labels=getPair[0], values=getPair[1], valuesAgain=getPair[2], form=form)
 
 
 
@@ -168,10 +164,14 @@ def forms():
     else:
         #your code here    
         getPair=queryData()
-        return render_template("forms.html", labels=getPair[0], values=getPair[1], valuesAgain=getPair[2])
+        return render_template("forms.html")
 
 def queryData(partitionKey):
     resp_Query = table.query(KeyConditionExpression=Key('pkID').eq(partitionKey))['Items']
+    
+
+    print(resp_Query)
+    #print(type(resp_Query[0]))
     
     Tstamps=[]
     Temperatures=[]
@@ -179,21 +179,33 @@ def queryData(partitionKey):
 
     for elem in resp_Query:
         Tstamps.append(str(datetime.datetime.fromtimestamp(elem.get('Tstamp'))))
-        Temperatures.append(elem.get('Temperature'))    
-        Humidities.append(elem.get('Humidity'))    
-
-    
-    print("Tstamps: ")
-    for eachItem in Tstamps:
-        print(eachItem)
-    print("Temperatures: ")        
-    for eachItem in Temperatures:
-        print(eachItem)
-    print("Humidities: ")
-    for eachItem in Humidities:
-        print(eachItem)
+        Tstamps.append(str(datetime.datetime.fromtimestamp(elem.get('Tstamp')+10)))
+        # Temperatures.append(elem.get('Temperature'))    
+        # Humidities.append(elem.get('Humidity'))    
+        HumiditiesAux = {
+            'x': str(datetime.datetime.fromtimestamp(elem.get('Tstamp'))),
+            'y': elem.get('Humidity')
+        } 
+        Humidities.append(HumiditiesAux)
+        TemperaturesAux = {
+            'x': str(datetime.datetime.fromtimestamp(elem.get('Tstamp')+10)),
+            'y': elem.get('Temperature')
+        } 
+        Temperatures.append(TemperaturesAux)
+          
+    # print("Tstamps: ")
+    # for eachItem in Tstamps:
+    #     print(eachItem)
+    # print("Temperatures: ")        
+    # for eachItem in Temperatures:
+    #     print(eachItem)
+    # print("Humidities: ")
+    # for eachItem in Humidities:
+    #     print(eachItem)
 
     return (Tstamps,Temperatures,Humidities)
+    
+    
 
 @app.route('/settings')
 def settings(): 

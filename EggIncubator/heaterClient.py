@@ -170,10 +170,10 @@ if __name__ == "__main__":
     global lastHumid
     lastHumid=0
     global partitionKey
-    partitionKey='humidityTest2'
+    partitionKey='60hzteste1011'
 
     checkPartitionKeys()
-
+    print('enter')
     main()
 
 
