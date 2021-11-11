@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-import time as delay
+import time
 
 import os
 import glob
@@ -28,7 +28,7 @@ def read_temp():
 
     if lines == []:
         print("ERROR")
-        return setpoint
+        return tempRead
     while lines[0].strip()[-3:] != 'YES':
         time.sleep(0.2)
         lines = read_temp_raw()
@@ -55,44 +55,89 @@ kI = 0.1
 kD = 0.5
 potMax=90
 
-p.ChangeDutyCycle(0)
+
+tempRead=0
+I = 0
+totalTimer=0
+sumAvarTemp=0
+sumAvarPower=0
+minTemp=read_temp()
+maxTemp=minTemp
+power=0
+
+p.ChangeDutyCycle(power)
 
 def main():
-    #print("PWM Gerado!")
-    global lastTemp
     global tempRead
     global I
+    global totalTimer
+    global sumAvarTemp
+    global sumAvarPower
+    global minTemp
+    global maxTemp
+    global power
+    periodicidade = 60              #em segundos
 
-    delay.sleep(0.1)
+    startTimer=time.time()
+
+    time.sleep(0.1)
     lastTemp=tempRead
+    lastPower=power
     tempRead=read_temp()
 
     #PID Cicle
     error = setpoint - tempRead
     P = error*kP
     I += error*kI
-    if (I >= potMax-50): #quando esta esquentando (inicialmente frio) nao acumular muito I
+    if (I >= potMax-50):            #quando esta esquentando (inicialmente frio) nao acumular muito I
         I=potMax-50
     D = (lastTemp-tempRead)*kD
     PID = P + I + D
-    print("P:",round(P,2)," I:",round(I,2)," D:",round(D,2))
-    #print(round(PID,2))
-    if (PID >= potMax-50):  #limitar potencia max
+    #print("P:",round(P,2)," I:",round(I,2)," D:",round(D,2))
+    if (PID >= potMax-50):          #limitar potencia max
         PID = potMax-50
-    elif (PID <= -50):  #limitar potencia minima
+    elif (PID <= -50):              #limitar potencia minima
         PID = -50
-    p.ChangeDutyCycle(PID+50) #p.ChangeDutyCycle(PID+X) x=50 
+    power=PID+50
+    p.ChangeDutyCycle(power)       #p.ChangeDutyCycle(PID+X) x=50 
     #print("PID: ",round(PID,2),"I: ",round(I,2))
-    print("Temp: ",round(tempRead,2),"C  Erro: ", round(error,2),"C  Potencia: ",round(PID+50,2),"%") 
+    print("Temp: ",round(tempRead,2),"C  Erro: ", round(error,2),"C  Potencia: ",round(power,2),"%") 
+
+    #data manipulation for upload
+    if (tempRead<minTemp):
+        minTemp=tempRead
+    elif (tempRead>maxTemp):
+        maxTemp=tempRead        
+
+    elapsedTime=(time.time())-startTimer
+    totalTimer+=elapsedTime
+    sumAvarTemp+=tempRead*elapsedTime
+    sumAvarPower+=lastPower*elapsedTime
+    
+
+    weigAvarTemp=sumAvarTemp/totalTimer         #essa parte pode passar pra dentro da prox condicional
+    weigAvarPower=sumAvarPower/totalTimer       #essa tambem
+    
+    print("delay: ",round(elapsedTime,2)," Total tempo decorrido: ",round(totalTimer,2)," Med. Pond: ",round(weigAvarTemp,2), " Power: ",round(weigAvarPower,2))
+    print("minTemp: ",round(minTemp,2)," maxTemp: ",round(maxTemp,2))
+    print("")
+
+    if (totalTimer >= periodicidade):
+        print("")
+        print("Total Tempo decorrido: ",round(totalTimer,2)," Med. Pond: ", round(weigAvarTemp,2))
+        print("minTemp: ",round(minTemp,2)," maxTemp: ",round(maxTemp,2)," Media Pot: ",round(weigAvarPower,2))
+        print("")
+        totalTimer=0
+        sumAvarTemp=0
+        sumAvarPower=0
+        maxTemp=tempRead
+        minTemp=tempRead
+
+
+    
         
         
 if __name__ == "__main__":
-    global lastTemp
-    global tempRead
-    global I
-    lastTemp=0
-    tempRead=0
-    I = 0
 
     while(1):
         main()
