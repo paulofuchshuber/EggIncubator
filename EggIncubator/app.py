@@ -157,14 +157,23 @@ def getGraphData():
 
     return (labels,values,valuesAgain)
 
-@app.route('/forms')
+@app.route('/forms', methods=['GET','POST'])
 def forms():   
     if g.user is None:
         return redirect(url_for('login'))
     else:
-        #your code here    
-        getPair=queryData()
-        return render_template("forms.html")
+        #your code here  
+        lastPartitionKey=callManager()[-1]
+        getPair=queryData(lastPartitionKey)
+
+        form = chartsForm()
+        form.selectChart.choices = callManager()        #form.selectChart.choices = [for choice in callManager()]
+        if request.method == 'POST':
+            #print("0000000000", form.selectChart.data)
+            #print(type(form.selectChart.data))
+            getPair = queryData(str(form.selectChart.data))
+
+        return render_template("charts.html", labels=getPair[0],values=getPair[1], valuesAgain=getPair[2], form=form)
 
 def queryData(partitionKey):
     resp_Query = table.query(KeyConditionExpression=Key('pkID').eq(partitionKey))['Items']
@@ -192,16 +201,6 @@ def queryData(partitionKey):
             'y': elem.get('Temperature')
         } 
         Temperatures.append(TemperaturesAux)
-          
-    # print("Tstamps: ")
-    # for eachItem in Tstamps:
-    #     print(eachItem)
-    # print("Temperatures: ")        
-    # for eachItem in Temperatures:
-    #     print(eachItem)
-    # print("Humidities: ")
-    # for eachItem in Humidities:
-    #     print(eachItem)
 
     return (Tstamps,Temperatures,Humidities)
     

@@ -1,42 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    
-    <title>Forms</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!--   <meta http-equiv="refresh" content="5" >-->
+    <meta name="viewport" content="width=device-width, initial-scale=5.0">
 
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/resources/demos/style.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.0/chart.min.js" integrity="sha512-asxKqQghC1oBShyhiBwA+YgotaSYKxGP1rcSYTDrB0U6DxwlJjU59B67U8+5/++uFjcuVM8Hh5cokLjZlhm3Vg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <script>
-    $(function(){
-        $("#to").datepicker({ dateFormat: 'dd/mm/yy' });
-        $("#from").datepicker({ dateFormat: 'dd/mm/yy' }).bind("change",function(){
-            var minValue = $(this).val();
-            minValue = $.datepicker.parseDate("dd/mm/yy", minValue);
-            minValue.setDate(minValue.getDate()+1);
-            $("#to").datepicker( "option", "minDate", minValue );
-        })
-    });
-    </script>
+    <title>Old Charts</title>
+
+    <style>
+    .dropDown {
+        display:inline-block;
+        position: relative;
+     }
+    .chartArea {
+        width:85%;
+        display:inline-block;
+        position: relative;
+        left: -60px;
+     }
+    </style>
 
 </head>
 
 {% extends 'base.html' %}
 
+<body>
 
-{% block content %}
 
-    <div class='main'>
+    {% block content %}
+
+<div class="main">
+
         <h3>
-            <br />
-            From: <input type="text" id="from">
-            To: <input type="text" id="to">
-            <button id="export">Export</button>
-    
+            <form method="POST">
+                {{ form.csrf_token }}
+                {{ form.selectChart }}
+                <input type="submit">
+            </form>
         </h3>
+
+    <div class="chartArea">  
+    <canvas id="myChart" max-width="100" max-height="100"></canvas>
+    <script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ labels | safe }},
+        datasets: [{
+            label: 'Temperature',
+            //labels: {{ labels | safe }},
+            data: {{ values | safe }},
+            backgroundColor: [
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 3
+        },
+        {
+            label: 'Humidity',
+            //labels: {{ labels2 | safe }},
+            data: {{ valuesAgain | safe }},
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)'
+            ],
+            borderWidth: 3
+        }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+    });
+    </script>
     </div>
 
+</div>
 
 {% endblock %}
 
+
+</body>
 </html>
