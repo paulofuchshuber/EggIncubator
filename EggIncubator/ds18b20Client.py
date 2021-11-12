@@ -110,6 +110,7 @@ def main():
     sumAverTemp+=tempRead*elapsedTime
     sumAverPower+=lastPower*elapsedTime
     
+    print(round(totalTimer,2))
 
     weigAverTemp=sumAverTemp/totalTimer         #essa parte pode passar pra dentro da prox condicional
     weigAverPower=sumAverPower/totalTimer       #essa tambem
@@ -124,9 +125,9 @@ def main():
         # print("Total Tempo decorrido: ",round(totalTimer,2)," Med. Pond: ", round(weigAverTemp,2))
         # print("minTemp: ",round(minTemp,2)," maxTemp: ",round(maxTemp,2)," Media Pot: ",round(weigAverPower,2))
         # print("")
-        Tstamp=int((time.time()))
+        Tstamp='ds18b20'+'#'+str(int((time.time())))
         print("")
-        dynamoFunctions.myfunc(partitionKey,Tstamp, TemperatureAverage=weigAverTemp,MinimumTemp=minTemp,MaximumTemp=maxTemp,Power=weigAverPower)
+        dynamoFunctions.genericPutKW(partitionKey,Tstamp,TemperatureAverage=weigAverTemp,MinimumTemp=minTemp,MaximumTemp=maxTemp,Power=weigAverPower)
         print("")
         totalTimer=0
         sumAverTemp=0

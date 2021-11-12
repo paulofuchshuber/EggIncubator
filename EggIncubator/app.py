@@ -188,7 +188,7 @@ def queryData(partitionKey):
 
     for elem in resp_Query:
         Tstamps.append(str(datetime.datetime.fromtimestamp(int(elem.get('Tstamp')))))
-        Tstamps.append(str(datetime.datetime.fromtimestamp(int(elem.get('Tstamp'))+10)))
+        #Tstamps.append(str(datetime.datetime.fromtimestamp(int(elem.get('Tstamp'))+10)))
         # Temperatures.append(elem.get('Temperature'))    
         # Humidities.append(elem.get('Humidity'))    
         HumiditiesAux = {
@@ -197,7 +197,7 @@ def queryData(partitionKey):
         } 
         Humidities.append(HumiditiesAux)
         TemperaturesAux = {
-            'x': str(datetime.datetime.fromtimestamp(int(elem.get('Tstamp'))+10)),
+            'x': str(datetime.datetime.fromtimestamp(int(elem.get('Tstamp')))),
             'y': elem.get('Temperature')
         } 
         Temperatures.append(TemperaturesAux)

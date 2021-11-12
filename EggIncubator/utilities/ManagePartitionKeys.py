@@ -23,7 +23,7 @@ def table_insert(keysList):
     response = table.put_item(
        Item={
             'pkID': 'KeyManager',
-            'Tstamp': 1,
+            'Tstamp': "1",
             'List': keysList
         }
     )
