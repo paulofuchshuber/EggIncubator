@@ -71,10 +71,11 @@ class MyDb(object):
     @staticmethod
     def sensor_value(GPIOpin):
 
-        sensor = Adafruit_DHT.DHT22
+        sensor = Adafruit_DHT.DHT11
 
         humidity, temperature = Adafruit_DHT.read_retry(sensor, GPIOpin)
-        temperature+=1.2
+        temperature+=37.5
+        humidity+=64
 
         if humidity is not None and temperature is not None:
             print('Pin={0:0d} Temp={1:0.1f}*C  Humidity={2:0.1f}%'.format(GPIOpin,temperature, humidity))
@@ -87,8 +88,8 @@ def table_insert(keysList):
     table = dynamodb.Table('EggIncubator')
     response = table.put_item(
        Item={
-            'pkID': 'KeyManager',
-            'Tstamp': 1,
+            'pkID': 'KeyManager2',
+            'Tstamp': '1',
             'List': keysList
         }
     )
@@ -119,7 +120,7 @@ def main():
     deltaHumid=abs(Humidity-lastHumid)
     #print (deltaTemp)
     if (now is not None) and (deltaTemp<2.5) and (Temperature < 50) and (Humidity <=100) and (Temperature > 0) and (deltaHumid<5):   #alterar para: se dia e hora for nulo, obter dia e hora, talvez em while...
-        obj.put(pkID=partitionKey, Tstamp=now, Temperature=str(round(Temperature,3)), Humidity=str(round(Humidity,3)))
+        obj.put(pkID=partitionKey, Tstamp=str(now), Temperature=str(round(Temperature,3)), Humidity=str(round(Humidity,3)))
         counter = counter + 1
         print("{0:0} - Uploaded Sample on Cloud T:{1:0.1f},H:{2:0.1f} ".format(counter-1, Temperature, Humidity))
     lastTemp=Temperature
@@ -129,7 +130,7 @@ def main():
     deltaTempExt=abs(TemperatureExt-lastTempExt)
     #print (deltaTempExt)
     if (now is not None) and (deltaTempExt<2) and (TemperatureExt < 50) and (HumidityExt <=100) and (TemperatureExt > 0):   #alterar para: se dia e hora for nulo, obter dia e hora, talvez em while...
-        obj.putExt(pkID=partitionKey+'EXT', Tstamp=now, TemperatureExt=str(round(TemperatureExt,3)), HumidityExt=str(round(HumidityExt,3)))
+        obj.putExt(pkID=partitionKey+'EXT', Tstamp=str(now), TemperatureExt=str(round(TemperatureExt,3)), HumidityExt=str(round(HumidityExt,3)))
         #counter = counter + 1
         print("{0:0} - Uploaded Sample on Cloud T (Ext):{1:0.1f},H:{2:0.1f} ".format(counter-1, TemperatureExt, HumidityExt))
     lastTempExt=TemperatureExt
@@ -137,7 +138,7 @@ def main():
     
 def checkPartitionKeys():
     existence=0
-    manager = table.query(KeyConditionExpression=Key('pkID').eq('KeyManager'))['Items']
+    manager = table.query(KeyConditionExpression=Key('pkID').eq('KeyManager2'))['Items']
     
     #print (manager)
     managerList=[]
@@ -170,7 +171,7 @@ if __name__ == "__main__":
     global lastHumid
     lastHumid=0
     global partitionKey
-    partitionKey='60hzteste1011'
+    partitionKey='testeNewSortKey'
 
     checkPartitionKeys()
     print('enter')

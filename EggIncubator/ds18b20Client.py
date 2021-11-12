@@ -1,31 +1,30 @@
 import RPi.GPIO as GPIO
 import time
-
 import os
 import glob
 import time
+import dynamoFunctions
 
 #ds18b20
  
-os.system('modprobe w1-gpio')
+os.system('modprobe w1-gpio')           #ds18b20 lib
 os.system('modprobe w1-therm')
  
-base_dir = '/sys/bus/w1/devices/'
+base_dir = '/sys/bus/w1/devices/'       #ds18b20 config
 device_folder = glob.glob(base_dir + '28*')[0]
 device_file = device_folder + '/w1_slave'
  
-def read_temp_raw():
+def read_temp_raw():                    #ds18b20 read function
     f = open(device_file, 'r')
     lines = f.readlines()
     f.close()
     return lines
  
-def read_temp():
+def read_temp():                        #ds18b20 read function           
     lines = read_temp_raw()
     #lines = []  
     #print(lines)
     #print(lines[0].strip()[-3:])
-
     if lines == []:
         print("ERROR")
         return tempRead
@@ -38,29 +37,26 @@ def read_temp():
         temp_c = float(temp_string) / 1000.0
         return temp_c
 
-#pwm
-
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BOARD)                #pwm
 GPIO.setwarnings(False)
 
-GPIO.setup(32,GPIO.OUT) #heater pin 
+GPIO.setup(32,GPIO.OUT)                 #heater pin 
 p = GPIO.PWM(32,60)
 p.start(0)
 
-#GPIO.setup(37,GPIO.OUT) #humidif. pin 
 
-setpoint = 38  #em graus celsius
+setpoint = 38   #em graus celsius
 kP = 60
 kI = 0.1
 kD = 0.5
 potMax=90
 
 
-tempRead=0
+tempRead=0                          #variaveis globais q fazem atribuição antes da declaração
 I = 0
 totalTimer=0
-sumAvarTemp=0
-sumAvarPower=0
+sumAverTemp=0
+sumAverPower=0
 minTemp=read_temp()
 maxTemp=minTemp
 power=0
@@ -71,8 +67,8 @@ def main():
     global tempRead
     global I
     global totalTimer
-    global sumAvarTemp
-    global sumAvarPower
+    global sumAverTemp
+    global sumAverPower
     global minTemp
     global maxTemp
     global power
@@ -111,34 +107,41 @@ def main():
 
     elapsedTime=(time.time())-startTimer
     totalTimer+=elapsedTime
-    sumAvarTemp+=tempRead*elapsedTime
-    sumAvarPower+=lastPower*elapsedTime
+    sumAverTemp+=tempRead*elapsedTime
+    sumAverPower+=lastPower*elapsedTime
     
 
-    weigAvarTemp=sumAvarTemp/totalTimer         #essa parte pode passar pra dentro da prox condicional
-    weigAvarPower=sumAvarPower/totalTimer       #essa tambem
+    weigAverTemp=sumAverTemp/totalTimer         #essa parte pode passar pra dentro da prox condicional
+    weigAverPower=sumAverPower/totalTimer       #essa tambem
     
-    print("delay: ",round(elapsedTime,2)," Total tempo decorrido: ",round(totalTimer,2)," Med. Pond: ",round(weigAvarTemp,2), " Power: ",round(weigAvarPower,2))
-    print("minTemp: ",round(minTemp,2)," maxTemp: ",round(maxTemp,2))
-    print("")
+    #print("delay: ",round(elapsedTime,2)," Total tempo decorrido: ",round(totalTimer,2)," Med. Pond: ",round(weigAverTemp,2), " PowerAver: ",round(weigAverPower,2))
+    #print("minTemp: ",round(minTemp,2)," maxTemp: ",round(maxTemp,2))
+    #print("DHT: T: ",temperatureDHT1,"H: ",humidityDHT1)
+    #print("")
 
     if (totalTimer >= periodicidade):
+        # print("")
+        # print("Total Tempo decorrido: ",round(totalTimer,2)," Med. Pond: ", round(weigAverTemp,2))
+        # print("minTemp: ",round(minTemp,2)," maxTemp: ",round(maxTemp,2)," Media Pot: ",round(weigAverPower,2))
+        # print("")
+        Tstamp=int((time.time()))
         print("")
-        print("Total Tempo decorrido: ",round(totalTimer,2)," Med. Pond: ", round(weigAvarTemp,2))
-        print("minTemp: ",round(minTemp,2)," maxTemp: ",round(maxTemp,2)," Media Pot: ",round(weigAvarPower,2))
+        dynamoFunctions.myfunc(partitionKey,Tstamp, TemperatureAverage=weigAverTemp,MinimumTemp=minTemp,MaximumTemp=maxTemp,Power=weigAverPower)
         print("")
         totalTimer=0
-        sumAvarTemp=0
-        sumAvarPower=0
+        sumAverTemp=0
+        sumAverPower=0
         maxTemp=tempRead
         minTemp=tempRead
-
-
+        
     
         
         
 if __name__ == "__main__":
 
+    global partitionKey
+    partitionKey='testeNewSortKey'
     while(1):
         main()
-    
+
+

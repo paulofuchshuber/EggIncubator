@@ -99,8 +99,8 @@ def components():
 class chartsForm(FlaskForm):
     selectChart = SelectField('Plot: ', choices=[])
 
-def callManager():
-    manager = table.query(KeyConditionExpression=Key('pkID').eq('KeyManager'))['Items']
+def callManager(partitionKey):
+    manager = table.query(KeyConditionExpression=Key('pkID').eq(partitionKey))['Items']
     managerList=[]
     for elem in manager:
         managerList = elem.get('List')  
@@ -113,11 +113,11 @@ def charts():
         return redirect(url_for('login'))
     else:
         #your code here  
-        lastPartitionKey=callManager()[-1]
+        lastPartitionKey=callManager('KeyManager2')[-1]
         getPair=queryData(lastPartitionKey)
 
         form = chartsForm()
-        form.selectChart.choices = callManager()        #form.selectChart.choices = [for choice in callManager()]
+        form.selectChart.choices = callManager('KeyManager2')        #form.selectChart.choices = [for choice in callManager()]
         if request.method == 'POST':
             #print("0000000000", form.selectChart.data)
             #print(type(form.selectChart.data))
@@ -163,11 +163,11 @@ def forms():
         return redirect(url_for('login'))
     else:
         #your code here  
-        lastPartitionKey=callManager()[-1]
+        lastPartitionKey=callManager('KeyManager')[-1]
         getPair=queryData(lastPartitionKey)
 
         form = chartsForm()
-        form.selectChart.choices = callManager()        #form.selectChart.choices = [for choice in callManager()]
+        form.selectChart.choices = callManager('KeyManager')        #form.selectChart.choices = [for choice in callManager()]
         if request.method == 'POST':
             #print("0000000000", form.selectChart.data)
             #print(type(form.selectChart.data))
@@ -187,17 +187,17 @@ def queryData(partitionKey):
     Humidities=[]
 
     for elem in resp_Query:
-        Tstamps.append(str(datetime.datetime.fromtimestamp(elem.get('Tstamp'))))
-        Tstamps.append(str(datetime.datetime.fromtimestamp(elem.get('Tstamp')+10)))
+        Tstamps.append(str(datetime.datetime.fromtimestamp(int(elem.get('Tstamp')))))
+        Tstamps.append(str(datetime.datetime.fromtimestamp(int(elem.get('Tstamp'))+10)))
         # Temperatures.append(elem.get('Temperature'))    
         # Humidities.append(elem.get('Humidity'))    
         HumiditiesAux = {
-            'x': str(datetime.datetime.fromtimestamp(elem.get('Tstamp'))),
+            'x': str(datetime.datetime.fromtimestamp(int(elem.get('Tstamp')))),
             'y': elem.get('Humidity')
         } 
         Humidities.append(HumiditiesAux)
         TemperaturesAux = {
-            'x': str(datetime.datetime.fromtimestamp(elem.get('Tstamp')+10)),
+            'x': str(datetime.datetime.fromtimestamp(int(elem.get('Tstamp'))+10)),
             'y': elem.get('Temperature')
         } 
         Temperatures.append(TemperaturesAux)
