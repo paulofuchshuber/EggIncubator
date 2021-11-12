@@ -5,6 +5,7 @@ import datetime
 from boto3.dynamodb.conditions import Key, Attr
 from flask_wtf import FlaskForm
 from wtforms import SelectField
+import dynamoFunctions
 
 app = Flask(__name__)
 app.secret_key = 'somesecretkey'
@@ -114,14 +115,41 @@ def charts():
     else:
         #your code here  
         lastPartitionKey=callManager('KeyManager2')[-1]
-        getPair=queryData(lastPartitionKey)
+        getData = dynamoFunctions.genericQueryData(lastPartitionKey)
+        titles=dynamoFunctions.returnTitles(getData)
+        print(titles)
+
+        print(type(getData))
+        print(getData[0])
+        print(type(getData[0]))
+        splittedData=dynamoFunctions.splitData(titles,getData)
+        #print(splittedData)
+
+        # dataSet1=[]
+        # dataSet2=[]
+        # dataSet3=[]
+        # dataSet4=[]
+
+        # for elem in getData:
+        #     dataSet1.append(elem.get(titles[0]))    #for n in titles
+        #     dataSet2.append(elem.get(titles[1]))        #if n==0 : salva aqui
+        #     dataSet3.append(elem.get(titles[3]))        #if n==1 : salva la
+        #     dataSet4.append(elem.get(titles[5]))
+        # #print(titles[0])
+        
+        # print(dataSet1)
+        # print("")
+
+        
 
         form = chartsForm()
         form.selectChart.choices = callManager('KeyManager2')        #form.selectChart.choices = [for choice in callManager()]
         if request.method == 'POST':
             #print("0000000000", form.selectChart.data)
             #print(type(form.selectChart.data))
-            getPair = queryData(str(form.selectChart.data))
+            # getPair = queryData(str(form.selectChart.data))
+            getData = dynamoFunctions.genericQueryData(lastPartitionKey)
+            print(getData)
 
         return render_template("charts.html", labels=getPair[0],values=getPair[1], valuesAgain=getPair[2], form=form)
         
