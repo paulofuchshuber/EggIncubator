@@ -52,11 +52,10 @@
     data: {
         labels: {{ labels | safe }},
         datasets: [{
-            label: 'Temperature',
-            //labels: {{ labels | safe }},
-            data: {{ values | safe }},
+            label:  {{ titles[5] | safe }},
+            data: {{ values1 | safe }},
             backgroundColor: [
-                'rgba(255, 159, 64, 0.2)'
+                'rgba(255, 159, 64, 0.1)'
             ],
             borderColor: [
                 'rgba(255, 159, 64, 1)'
@@ -64,11 +63,32 @@
             borderWidth: 3
         },
         {
-            label: 'Humidity',
-            //labels: {{ labels2 | safe }},
-            data: {{ valuesAgain | safe }},
+            label:  {{ titles[1] | safe }},
+            data: {{ values2 | safe }},
             backgroundColor: [
-                'rgba(255, 99, 132, 0.2)'
+                'rgba(0, 0, 0, 0.1)'
+            ],
+            borderColor: [
+                'rgba(0, 0, 0, 1)'
+            ],
+            borderWidth: 3
+        },
+        {
+            label:  {{ titles[0] | safe }},
+            data: {{ values3 | safe }},
+            backgroundColor: [
+                'rgba(255, 255, 0, 0.1)'
+            ],
+            borderColor: [
+                'rgba(255, 255, 0, 1)'
+            ],
+            borderWidth: 3
+        },
+        {
+            label:  {{ titles[3] | safe }},
+            data: {{ values4 | safe }},
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.1)'
             ],
             borderColor: [
                 'rgba(255, 99, 132, 1)'
@@ -82,7 +102,7 @@
         maintainAspectRatio: true,
         scales: {
             y: {
-                beginAtZero: true
+                beginAtZero: false
             }
         }
     }

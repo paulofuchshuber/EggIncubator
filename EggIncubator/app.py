@@ -116,31 +116,7 @@ def charts():
         #your code here  
         lastPartitionKey=callManager('KeyManager2')[-1]
         getData = dynamoFunctions.genericQueryData(lastPartitionKey)
-        titles=dynamoFunctions.returnTitles(getData)
-        print(titles)
-
-        print(type(getData))
-        print(getData[0])
-        print(type(getData[0]))
-        splittedData=dynamoFunctions.splitData(titles,getData)
-        #print(splittedData)
-
-        # dataSet1=[]
-        # dataSet2=[]
-        # dataSet3=[]
-        # dataSet4=[]
-
-        # for elem in getData:
-        #     dataSet1.append(elem.get(titles[0]))    #for n in titles
-        #     dataSet2.append(elem.get(titles[1]))        #if n==0 : salva aqui
-        #     dataSet3.append(elem.get(titles[3]))        #if n==1 : salva la
-        #     dataSet4.append(elem.get(titles[5]))
-        # #print(titles[0])
-        
-        # print(dataSet1)
-        # print("")
-
-        
+         
 
         form = chartsForm()
         form.selectChart.choices = callManager('KeyManager2')        #form.selectChart.choices = [for choice in callManager()]
@@ -150,8 +126,16 @@ def charts():
             # getPair = queryData(str(form.selectChart.data))
             getData = dynamoFunctions.genericQueryData(lastPartitionKey)
             print(getData)
+        
+        for index,title in enumerate(getData[0]):
+            if (title=='Tstamp'):
+                labels=getData[1][index]
 
-        return render_template("charts.html", labels=getPair[0],values=getPair[1], valuesAgain=getPair[2], form=form)
+        titles=[]
+        for title in getData[0]:
+            titles.append("'"+title+"'")
+
+        return render_template("charts.html",titles=titles, labels=labels,values1=getData[1][5], values2=getData[1][1],values3=getData[1][0],values4=getData[1][3], form=form)
         
 
 

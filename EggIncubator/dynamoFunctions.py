@@ -27,7 +27,11 @@ def genericPutKW(pkID,Tstamp,**kwargs):  #put into dynamodb
         
 def genericQueryData(partitionKey):
     resp_Query = table.query(KeyConditionExpression=Key('pkID').eq(partitionKey))['Items']
-    return (resp_Query)
+    print("000000000000000000000000000000000000")
+    titles=returnTitles(resp_Query)
+    print(titles)
+    splittedData=splitData(titles,resp_Query)
+    return (titles,splittedData)
     
 def returnTitles(Data):
     titles=[]
@@ -38,63 +42,54 @@ def returnTitles(Data):
 
 def splitData(titles,Data):
     
-
     dataVector= [[] for _ in range(len(titles))]
-
-    # print("$$$$$$$$$$")
-    # for n in dataVector:
-    #     n.append("1")
-    # print(dataVector)
 
     print("$$$$$$$$")
     
-    for index, item in enumerate(Data):
+    for index, item in enumerate(Data):            #Aqui que realmente separa os dados
             for k,v in item.items():
                 print(k,v) 
                 n=getKeyIndex(titles,k)
                 dataVector[n].append(v)
-            print("")
-
-    #print(dataVector)
-
-    for element in dataVector:
-        print(element)
-        print("")
-
-    PkSkIndexes=getPkSkIndexes(titles)
-    print("P S :",PkSkIndexes)
     
-    # #print(Data)
-    # for index, item in enumerate(Data):
-    #     for k,v in item.items():
-    #         #print(k,v) 
-    #         for i,n in enumerate(titles):
-    #             if n == k:
-    #                 dataVector[i]=v
-    #                 print(n)#armazena no respectivo vetor
-    #     #print(index,item)
-    #     print("")
-    
-    # print(dataVector)
+    skPosition=getKeyIndex(titles,"Tstamp")         #trata o timestamp
+    dataVector[skPosition]=treatTstamp(dataVector[skPosition])
 
+    for index, item in enumerate(dataVector):       #trata os demais dados
+        if(index!=getKeyIndex(titles,"Tstamp") and index!=getKeyIndex(titles,"pkID")):
+            dataVector[index]=treatDecimal(dataVector[index])
+            # print(index)
+
+    # for element in dataVector:
+    #      print(element)
+    #      print("")
 
     return dataVector
 
-def getPkSkIndexes(titles):
-    for index, item in enumerate(titles):
-        if (item=='pkID'):
-            p=index
-        elif (item=='Tstamp'):
-            s=index
-        print(index, item)            
-    return p,s
 
 def getKeyIndex(titles,k):
     for index, item in enumerate(titles):
         if (item==k):
             r=index
-        print(index, item)            
+        #print(index, item)            
     return r
+
+def treatTstamp(Vector):
+    newVector=[]
+    for eachTstamp in Vector:
+        aux = eachTstamp.split("#")
+        newVector.append(aux[1])
+        #print(eachTstamp)
+    #print(newVector)
+    return newVector
+
+def treatDecimal(Vector):
+    newVector=[]
+    for eachItem in Vector:
+        aux = str(eachItem)
+        newVector.append(aux)
+    return newVector
+
 
     # Tstamps=[]
     # Temperatures=[]
@@ -117,23 +112,3 @@ def getKeyIndex(titles,k):
 
     # return (Tstamps,Temperatures,Humidities)
 
-# def myfunc(partitionKey,Tstamp,**kwargs):
-
-#     print(partitionKey)
-#     print(Tstamp)
-#     for k,v in kwargs.items():
-#         print("%s = %s" % (k, round(v,2)))
-
-# def manyArgs(*arg):
-#   print "I was called with", len(arg), "arguments:", arg
-
-# def put(pkID='' , Tstamp='', Temperature='', Humidity=''):  #put into dynamodb
-#     table = dynamodb.Table('EggIncubator')
-#     response = table.put_item(
-#        Item={
-#             'pkID':pkID,
-#             'Tstamp' : Tstamp,
-#             'Temperature':Temperature,
-#             'Humidity' :Humidity
-#         }
-#     )
