@@ -141,7 +141,7 @@ def main():
 if __name__ == "__main__":
 
     global partitionKey
-    partitionKey='testeNewSortKey'
+    partitionKey='teste2NewSortKey'
     while(1):
         main()
 

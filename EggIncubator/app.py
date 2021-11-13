@@ -124,7 +124,7 @@ def charts():
             #print("0000000000", form.selectChart.data)
             #print(type(form.selectChart.data))
             # getPair = queryData(str(form.selectChart.data))
-            getData = dynamoFunctions.genericQueryData(lastPartitionKey)
+            getData = dynamoFunctions.genericQueryData(str(form.selectChart.data))
             print(getData)
         
         for index,title in enumerate(getData[0]):
@@ -185,7 +185,7 @@ def forms():
             #print(type(form.selectChart.data))
             getPair = queryData(str(form.selectChart.data))
 
-        return render_template("charts.html", labels=getPair[0],values=getPair[1], valuesAgain=getPair[2], form=form)
+        return render_template("forms.html", labels=getPair[0],values=getPair[1], valuesAgain=getPair[2], form=form)
 
 def queryData(partitionKey):
     resp_Query = table.query(KeyConditionExpression=Key('pkID').eq(partitionKey))['Items']

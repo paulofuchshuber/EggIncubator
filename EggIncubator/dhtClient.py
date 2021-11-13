@@ -39,7 +39,7 @@ class MyDb(object):
         self.table.put_item(
             Item={
                 'pkID':pkID,
-                'Tstamp' : Tstamp,
+                'Tstamp' : 'dht11#'+str(Tstamp),
                 'Temperature':Temperature,
                 'Humidity' :Humidity,
             }
@@ -49,7 +49,7 @@ class MyDb(object):
         self.table.put_item(
             Item={
                 'pkID':pkID,
-                'Tstamp' : Tstamp,
+                'Tstamp' : 'dht11EXT#'+str(Tstamp),
                 'TemperatureExt':TemperatureExt,
                 'HumidityExt' :HumidityExt,
             }
@@ -130,7 +130,7 @@ def main():
     deltaTempExt=abs(TemperatureExt-lastTempExt)
     #print (deltaTempExt)
     if (now is not None) and (deltaTempExt<2) and (TemperatureExt < 50) and (HumidityExt <=100) and (TemperatureExt > 0):   #alterar para: se dia e hora for nulo, obter dia e hora, talvez em while...
-        obj.putExt(pkID=partitionKey+'EXT', Tstamp=str(now), TemperatureExt=str(round(TemperatureExt,3)), HumidityExt=str(round(HumidityExt,3)))
+        obj.putExt(pkID=partitionKey, Tstamp=str(now), TemperatureExt=str(round(TemperatureExt,3)), HumidityExt=str(round(HumidityExt,3)))
         #counter = counter + 1
         print("{0:0} - Uploaded Sample on Cloud T (Ext):{1:0.1f},H:{2:0.1f} ".format(counter-1, TemperatureExt, HumidityExt))
     lastTempExt=TemperatureExt
@@ -171,7 +171,7 @@ if __name__ == "__main__":
     global lastHumid
     lastHumid=0
     global partitionKey
-    partitionKey='testeNewSortKey'
+    partitionKey='teste2NewSortKey'
 
     checkPartitionKeys()
     print('enter')
