@@ -31,13 +31,47 @@ def genericQueryData(partitionKey):
     titles=returnTitles(resp_Query)
     print(titles)
     splittedData=splitData(titles,resp_Query)
+
+
+
+    # for index, element in enumerate(titles):    #order "pkID", "Tstamp", ....
+    #     if(element=="pkID"):
+    #         titles[0],titles[index] = titles[index],titles[0]
+    #         splittedData[0],splittedData[index] = splittedData[index],splittedData[0]
+    #     elif(element=="Tstamp"):    
+    #         titles[1],titles[index] = titles[index],titles[1]
+    #         splittedData[1],splittedData[index] = splittedData[index],splittedData[1]
+    
+    # print("")
+    # for element in titles:
+    #     print (element)
+
+    # for index, element in enumerate(titles):
+    #     if(element=="pkID"):
+    #         auxTitles=titles[0]
+    #         titles[0] = titles[index]
+    #         titles[index]=auxTitles
+    #     elif(element=="Tstamp"):    
+    #         auxTitles=titles[1]
+    #         titles[1] = titles[index]
+    #         titles[index]=auxTitles
+
+    for element in splittedData:
+        print (element)
+    for element in titles:
+        print (element)
+
+
     return (titles,splittedData)
     
 def returnTitles(Data):
     titles=[]
-    for k,v in Data[0].items():
-        titles.append(k)
-    #print("BBB : ", titles)
+    for item in Data:
+            for k,v in item.items():
+                #print(k,v) 
+                titles.append(k)
+            #print("")
+    titles=set(titles)
     return titles
 
 def splitData(titles,Data):
@@ -47,32 +81,53 @@ def splitData(titles,Data):
     print("$$$$$$$$")
     
     for index, item in enumerate(Data):            #Aqui que realmente separa os dados
+            # print(index,item)
+            # print("")
             for k,v in item.items():
                 print(k,v) 
                 n=getKeyIndex(titles,k)
+                if (k!="Tstamp" and k!="pkID"):
+                    aux=v
+                    v={
+                        'x': str(treatOneTstamp(item.get('Tstamp'))),
+                        'y': str(aux)
+                    }
                 dataVector[n].append(v)
+
+    # for index, element in enumerate(dataVector):
+    #      print(index, element)
+    #      print("")
     
     skPosition=getKeyIndex(titles,"Tstamp")         #trata o timestamp
     dataVector[skPosition]=treatTstamp(dataVector[skPosition])
+    dataVector[skPosition]=list(set(dataVector[skPosition]))    #remove duplicatas
+    dataVector[skPosition].sort()
+    #print(" ssssssssssssss ",dataVector[skPosition])
 
-    for index, item in enumerate(dataVector):       #trata os demais dados
-        if(index!=getKeyIndex(titles,"Tstamp") and index!=getKeyIndex(titles,"pkID")):
-            dataVector[index]=treatDecimal(dataVector[index])
-            # print(index)
+    # for index, item in enumerate(dataVector):       #trata os demais dados
+    #     if(index!=getKeyIndex(titles,"Tstamp") and index!=getKeyIndex(titles,"pkID")):
+    #         dataVector[index]=treatDecimal(dataVector[index],dataVector[skPosition])
+    #         #print(index,item)
 
-    # for element in dataVector:
-    #      print(element)
-    #      print("")
+
+
+    # print(titles)
+
 
     return dataVector
 
 
 def getKeyIndex(titles,k):
+    #print("(((((")
     for index, item in enumerate(titles):
         if (item==k):
             r=index
-        #print(index, item)            
+            #print(r,item)            
     return r
+
+def treatOneTstamp(data):
+    r = data.split("#")
+    return r[1]
 
 def treatTstamp(Vector):
     newVector=[]
@@ -83,11 +138,12 @@ def treatTstamp(Vector):
     #print(newVector)
     return newVector
 
-def treatDecimal(Vector):
+def treatDecimal(Vector,Tstamp):
     newVector=[]
-    for eachItem in Vector:
+    for index,eachItem in enumerate(Vector):
         aux = str(eachItem)
         newVector.append(aux)
+        print(index,aux)
     return newVector
 
 

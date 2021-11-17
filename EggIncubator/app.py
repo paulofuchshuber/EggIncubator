@@ -124,18 +124,23 @@ def charts():
             #print("0000000000", form.selectChart.data)
             #print(type(form.selectChart.data))
             # getPair = queryData(str(form.selectChart.data))
-            getData = dynamoFunctions.genericQueryData(str(form.selectChart.data))
+            getData = dynamoFunctions.genericQueryData(str(form.selectChart.data))  
             print(getData)
         
-        for index,title in enumerate(getData[0]):
-            if (title=='Tstamp'):
+        dataInedexes=[]
+        for index,title in enumerate(getData[0]):   #confere em titles qual a posição do timestamp e seta como lables
+            if (title=="Tstamp"):
                 labels=getData[1][index]
+            elif (title!="pkID"):
+                dataInedexes.append(index)
 
         titles=[]
         for title in getData[0]:
-            titles.append("'"+title+"'")
+            if(title!="Tstamp" and title!="pkID"):
+                titles.append("'"+title+"'")
+        
 
-        return render_template("charts.html",titles=titles, labels=labels,values1=getData[1][5], values2=getData[1][1],values3=getData[1][0],values4=getData[1][3], form=form)
+        return render_template("charts.html",titles=titles, labels=labels,values1=getData[1][dataInedexes[0]], values2=getData[1][dataInedexes[1]],values3=getData[1][dataInedexes[2]],values4=getData[1][dataInedexes[3]], form=form)
         
 
 
