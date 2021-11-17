@@ -29,38 +29,13 @@ def genericQueryData(partitionKey):
     resp_Query = table.query(KeyConditionExpression=Key('pkID').eq(partitionKey))['Items']
     print("000000000000000000000000000000000000")
     titles=returnTitles(resp_Query)
-    print(titles)
+    #print(titles)
     splittedData=splitData(titles,resp_Query)
 
-
-
-    # for index, element in enumerate(titles):    #order "pkID", "Tstamp", ....
-    #     if(element=="pkID"):
-    #         titles[0],titles[index] = titles[index],titles[0]
-    #         splittedData[0],splittedData[index] = splittedData[index],splittedData[0]
-    #     elif(element=="Tstamp"):    
-    #         titles[1],titles[index] = titles[index],titles[1]
-    #         splittedData[1],splittedData[index] = splittedData[index],splittedData[1]
-    
-    # print("")
+    # for element in splittedData:
+    #     print (element)
     # for element in titles:
     #     print (element)
-
-    # for index, element in enumerate(titles):
-    #     if(element=="pkID"):
-    #         auxTitles=titles[0]
-    #         titles[0] = titles[index]
-    #         titles[index]=auxTitles
-    #     elif(element=="Tstamp"):    
-    #         auxTitles=titles[1]
-    #         titles[1] = titles[index]
-    #         titles[index]=auxTitles
-
-    for element in splittedData:
-        print (element)
-    for element in titles:
-        print (element)
-
 
     return (titles,splittedData)
     
@@ -84,7 +59,7 @@ def splitData(titles,Data):
             # print(index,item)
             # print("")
             for k,v in item.items():
-                print(k,v) 
+                #print(k,v) 
                 n=getKeyIndex(titles,k)
                 if (k!="Tstamp" and k!="pkID"):
                     aux=v
@@ -102,18 +77,7 @@ def splitData(titles,Data):
     dataVector[skPosition]=treatTstamp(dataVector[skPosition])
     dataVector[skPosition]=list(set(dataVector[skPosition]))    #remove duplicatas
     dataVector[skPosition].sort()
-    #print(" ssssssssssssss ",dataVector[skPosition])
-
-    # for index, item in enumerate(dataVector):       #trata os demais dados
-    #     if(index!=getKeyIndex(titles,"Tstamp") and index!=getKeyIndex(titles,"pkID")):
-    #         dataVector[index]=treatDecimal(dataVector[index],dataVector[skPosition])
-    #         #print(index,item)
-
-
-
-    # print(titles)
-
-
+    
     return dataVector
 
 
@@ -143,7 +107,7 @@ def treatDecimal(Vector,Tstamp):
     for index,eachItem in enumerate(Vector):
         aux = str(eachItem)
         newVector.append(aux)
-        print(index,aux)
+        #print(index,aux)
     return newVector
 
 
