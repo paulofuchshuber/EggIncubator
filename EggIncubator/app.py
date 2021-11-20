@@ -121,11 +121,7 @@ def charts():
         form = chartsForm()
         form.selectChart.choices = callManager('KeyManager2')        #form.selectChart.choices = [for choice in callManager()]
         if request.method == 'POST':
-            #print("0000000000", form.selectChart.data)
-            #print(type(form.selectChart.data))
-            # getPair = queryData(str(form.selectChart.data))
             getData = dynamoFunctions.genericQueryData(str(form.selectChart.data))  
-            #print(getData)
         
         dataInedexes=[]
         for index,title in enumerate(getData[0]):   
@@ -134,20 +130,13 @@ def charts():
             elif (title!="pkID"):
                 dataInedexes.append(index)  #array que informa os vetores de informações (Y axis)
 
-        # titles=[]
-        # for title in getData[0]:    #legendas
-        #     if(title!="Tstamp" and title!="pkID"):
-        #         titles.append("'"+title+"'")
-        
         titles=[]
         for title in getData[0]:    #legendas, essa caca veio como 'set'
-            #if(title!="Tstamp" and title!="pkID"):
             titles.append(title)
 
         values=[]
         values=packToChartJS(getData[1],dataInedexes,titles)
 
-        #return render_template("charts.html",titles=titles, labels=labels,values1=getData[1][dataInedexes[0]], values2=getData[1][dataInedexes[1]],values3=getData[1][dataInedexes[2]],values4=getData[1][dataInedexes[3]], form=form)
         return render_template("charts.html",labels=labels,values=values, form=form)
         
 def packToChartJS(Data,Indexes,titles):
@@ -155,7 +144,7 @@ def packToChartJS(Data,Indexes,titles):
         'Temperature':['#d9ca00'],
         'Humidity':['#048000'],
         'TemperatureExt':['#a8a032'],
-        'HumidityExt':['#035e00'],
+        'HumidityExt':['#058a00'],
         'MaximumTemp':['rgba(231, 76, 60, 1)'],
         'TemperatureAverage':['rgba(142, 68, 173, 1)'],
         'MinimumTemp':['rgba(41, 128, 185, 1)'],
