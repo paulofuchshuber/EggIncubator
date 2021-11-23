@@ -39,7 +39,7 @@ class MyDb(object):
         self.table.put_item(
             Item={
                 'pkID':pkID,
-                'Tstamp' : 'dht11#'+str(Tstamp),
+                'Tstamp' : 'dht22#'+str(Tstamp),
                 'Temperature':Temperature,
                 'Humidity' :Humidity,
             }
@@ -49,7 +49,7 @@ class MyDb(object):
         self.table.put_item(
             Item={
                 'pkID':pkID,
-                'Tstamp' : 'dht11EXT#'+str(Tstamp),
+                'Tstamp' : 'dht22EXT#'+str(Tstamp),
                 'TemperatureExt':TemperatureExt,
                 'HumidityExt' :HumidityExt,
             }
@@ -71,11 +71,13 @@ class MyDb(object):
     @staticmethod
     def sensor_value(GPIOpin):
 
-        sensor = Adafruit_DHT.DHT11
-
+        sensor = Adafruit_DHT.DHT22
+        sensor2 = Adafruit_DHT.DHT11
+        
         humidity, temperature = Adafruit_DHT.read_retry(sensor, GPIOpin)
-        temperature+=37.5
-        humidity+=64
+        #humidity, temperature = (0,0)
+        #temperature+=37.8
+        #humidity+=65
 
         if humidity is not None and temperature is not None:
             print('Pin={0:0d} Temp={1:0.1f}*C  Humidity={2:0.1f}%'.format(GPIOpin,temperature, humidity))
@@ -109,7 +111,7 @@ def main():
     pinDHT2=24
     
     now = int(time.time())
-    threading.Timer(interval=60, function=main).start()
+    threading.Timer(interval=300, function=main).start()
     obj = MyDb()
     
     Temperature , Humidity = obj.sensor_value(pinDHT1) 
@@ -171,7 +173,7 @@ if __name__ == "__main__":
     global lastHumid
     lastHumid=0
     global partitionKey
-    partitionKey='teste2NewSortKey'
+    partitionKey='teste2Umidif'
 
     checkPartitionKeys()
     print('enter')

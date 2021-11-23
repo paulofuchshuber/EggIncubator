@@ -72,7 +72,7 @@ def main():
     global minTemp
     global maxTemp
     global power
-    periodicidade = 60              #em segundos
+    periodicidade = 300              #em segundos
 
     startTimer=time.time()
 
@@ -141,7 +141,7 @@ def main():
 if __name__ == "__main__":
 
     global partitionKey
-    partitionKey='teste2NewSortKey'
+    partitionKey='teste2Umidif'
     while(1):
         main()
 

@@ -143,8 +143,8 @@ def packToChartJS(Data,Indexes,titles):
     colors={
         'Temperature':['#d9ca00'],
         'Humidity':['#048000'],
-        'TemperatureExt':['#a8a032'],
-        'HumidityExt':['#058a00'],
+        'TemperatureExt':['#be8f6a'],
+        'HumidityExt':['#1bf505'],
         'MaximumTemp':['rgba(231, 76, 60, 1)'],
         'TemperatureAverage':['rgba(142, 68, 173, 1)'],
         'MinimumTemp':['rgba(41, 128, 185, 1)'],
