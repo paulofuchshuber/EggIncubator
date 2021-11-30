@@ -16,6 +16,8 @@ $pip install flask-socketio
 $pip install psutil  
 $pip install flask-wtf  
 $pip install flask-socketio  
+$pip install eventlet  
+$pip install gevent-websocket  
 
 ## Run
 
