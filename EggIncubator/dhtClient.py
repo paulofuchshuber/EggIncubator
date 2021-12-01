@@ -173,7 +173,7 @@ if __name__ == "__main__":
     global lastHumid
     lastHumid=0
     global partitionKey
-    partitionKey='teste2Umidif'
+    partitionKey='testeRolagem2'
 
     checkPartitionKeys()
     print('enter')

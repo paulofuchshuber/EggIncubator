@@ -141,7 +141,7 @@ def main():
 if __name__ == "__main__":
 
     global partitionKey
-    partitionKey='teste2Umidif'
+    partitionKey='testeRolagem2'
     while(1):
         main()
 

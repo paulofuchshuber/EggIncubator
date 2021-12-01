@@ -5,11 +5,12 @@ import datetime
 from boto3.dynamodb.conditions import Key, Attr
 from flask_wtf import FlaskForm
 from wtforms import SelectField
+from flask_socketio import SocketIO, send
 import dynamoFunctions
 
 app = Flask(__name__)
 app.secret_key = 'somesecretkey'
-
+socketio = SocketIO(app)
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('EggIncubator')
@@ -89,12 +90,15 @@ def home():
         #your code here
         return render_template("home.html")   
 
+
+
 @app.route('/components')
 def components(): 
     if g.user is None:
         return redirect(url_for('login'))
     else:
         #your code here
+
         return render_template("components.html")     
 
 class chartsForm(FlaskForm):
@@ -263,7 +267,19 @@ def about():
         #your code here    
         return render_template("about.html")   
 
+@socketio.on('message')
+def handle_message(message):
+    print('received message: ' + str(message))    
+
+@socketio.on('aaa')
+def test_connect(mensagem2):
+    print("AAAAAAAAAAAAAA", mensagem2)
+    socketio.emit('aaa_response', 'voltou')    
+
 if __name__ == "__main__":
     app.debug = True
+    socketio.run(app)
+    # from waitress import serve
+    # serve(app,host="0.0.0.0", port=5000)
     app.run(host="0.0.0.0", port="5000")
 
