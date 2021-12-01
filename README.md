@@ -15,6 +15,9 @@ $pip install opencv-python
 $pip install flask-socketio  
 $pip install psutil  
 $pip install flask-wtf  
+$pip install flask-socketio  
+$pip install eventlet  
+$pip install gevent-websocket  
 
 ## Run
 
@@ -43,6 +46,7 @@ $sudo apt-get install libatlas-base-dev
 $sudo apt-get install libcblas-dev libhdf5-dev libhdf5-serial-dev libatlas-base-dev libjasper-dev libqtgui4 libqt4-test  
 $pip install RPi.GPIO  
 $pip install flask-socketio  
+$pip install eventlet  
 
 #### DHT Sensor Library:  
 $git clone https://github.com/adafruit/Adafruit_Python_DHT.git  
