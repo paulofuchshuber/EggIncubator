@@ -18,6 +18,7 @@ $pip install flask-wtf
 $pip install flask-socketio  
 $pip install eventlet  
 $pip install gevent-websocket  
+$pip install Flask-Bootstrap  
 
 ## Run
 
