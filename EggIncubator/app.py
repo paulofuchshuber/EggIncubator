@@ -7,6 +7,7 @@ from flask_wtf import FlaskForm
 from wtforms import SelectField, SubmitField
 from flask_socketio import SocketIO, send
 from flask_bootstrap    import Bootstrap
+import random
 import dynamoFunctions
 
 
@@ -19,6 +20,7 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('EggIncubator')
 
 bootstrap = Bootstrap(app)
+
 
 class User:
     def __init__(self, id, user, password):
@@ -109,7 +111,8 @@ def components():
         return redirect(url_for('login'))
     else:
         #your code here
-        #form = componentsForm()
+        #form = componentsForm()    
+        randomNumber=random.random()
         form = PowerState()
 
         if form.validate_on_submit() :
@@ -123,48 +126,18 @@ def components():
 
             if rollValue == 'LEFT':
                 PowerState.rollEggs = SubmitField('RIGHT')
-                
+                socketio.emit('rollEggs', 'RIGHT')
             elif rollValue == 'RIGHT':
                 PowerState.rollEggs = SubmitField('LEFT')
-                
+                socketio.emit('rollEggs', 'LEFT')                
             elif lampValue == 'OFF':
                 PowerState.lampState = SubmitField('ON')
-                
             elif lampValue == 'ON':
-                PowerState.lampState = SubmitField('OFF')                    
-        form = PowerState()
-        return render_template('components.html', form=form)
+                PowerState.lampState = SubmitField('OFF')   
 
-        # if request.method == "POST":   
-        #     print(request.form)
-        #     componentsForm.submit3 = SubmitField('ON')
-        #     value1=request.form.get('rollEggs')
-        #     value2=request.form.get('lampState')
-        #     print("8888888888888",value1,value2)     
-        #     return render_template("components.html", form=form)    
-
-            # for key, value in request.form.items():
-            #     print("key: {0}, value: {1}".format(key, value))  
-            #     return render_template("components.html", form=form)  
-
-        # if request.method == 'POST':
-        #     print("TESTE POST 1")
-        #     value=request.form
-        #     print(value)
-
-        #     if value == "rollEggs":
-        #         socketio.emit('rollEggs', 'rolou') 
-        #         value=[]
-        #         print ('ROLAGEM')
-
-        #         # componentsForm.rollEggs = SubmitField('ON')
-        #     elif value == "lamp":
-        #         value=[]
-        #         print ('LAMPADA')
-                
-    
-            
-        #return render_template("components.html", form=form)     
+        form = PowerState() 
+        return render_template('components.html', form=form, randomNumber=randomNumber)
+  
 
 class chartsForm(FlaskForm):
     selectChart = SelectField('Plot: ', choices=[])

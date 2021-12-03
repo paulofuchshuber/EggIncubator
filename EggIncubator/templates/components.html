@@ -5,6 +5,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="static/css/components.css">
 
+    <script type="text/javascript">
+        window.setTimeout(function () {
+        window.location.reload();
+        }, 1000);
+        </script>
+
 </head>
 
 {% extends 'base.html' %}
@@ -27,6 +33,8 @@
 
         <br />
 
+        <h1>
+            {{randomNumber}}
         <form class="form form-horizontal" method="post" role="form">
             {{ form.hidden_tag() }}
             {{ wtf.form_errors(form, hiddens="only") }}
@@ -37,7 +45,7 @@
             {{ wtf.form_field(form.lampState) }}
 
         </form>
-
+        </h1>
 <!--           
         {{ wtf.quick_form(form) }}
          -->
