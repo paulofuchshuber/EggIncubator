@@ -8,6 +8,7 @@
 </head>
 
 {% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 
 {% block content %}
@@ -20,17 +21,37 @@
         });
     </script>
 
-
     <div class='main'>
 
-
     <h1>
+
         <br />
-        Components
-        <br />
-        <br />
-        
-        
+
+        <form class="form form-horizontal" method="post" role="form">
+            {{ form.hidden_tag() }}
+            {{ wtf.form_errors(form, hiddens="only") }}
+          
+            {{ wtf.form_field(form.rollEggs) }}
+            <br />
+            <br />
+            {{ wtf.form_field(form.lampState) }}
+
+        </form>
+
+<!--           
+        {{ wtf.quick_form(form) }}
+         -->
+
+        <!-- <h3>
+        <form method="post">
+            <input type ="submit" name="rollEggs" value="left">
+            <br />
+            <br />
+            <input type ="submit" name="lampState" value="off">
+        </form>
+        </h3> -->
+
+        <!-- <br />
         <label class="switch">
             <input type="checkbox">
             <span class="slider round"></span>
@@ -55,7 +76,7 @@
         <label class="switch">
             <input type="checkbox">
             <span class="slider round"></span>
-        </label>
+        </label> -->
     </h1>
 
     </div>
