@@ -7,6 +7,7 @@ from flask_wtf import FlaskForm
 from wtforms import SelectField, SubmitField
 from flask_socketio import SocketIO, send
 from flask_bootstrap    import Bootstrap
+from flask_cors import CORS
 import random
 import dynamoFunctions
 
@@ -20,7 +21,7 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('EggIncubator')
 
 bootstrap = Bootstrap(app)
-
+CORS(app)
 
 class User:
     def __init__(self, id, user, password):
@@ -96,24 +97,22 @@ def home():
         return render_template("home.html")   
 
 
-class componentsForm(FlaskForm):
-    submit = SubmitField('submit')
-    submit3 = SubmitField('submit3')
-
 class PowerState(FlaskForm) :
     rollEggs = SubmitField('LEFT')    
     lampState = SubmitField('OFF')   
-    
+
 
 @app.route('/components', methods=["POST","GET"])
 def components(): 
     if g.user is None:
         return redirect(url_for('login'))
     else:
+        global randomNumber
         #your code here
-        #form = componentsForm()    
-        randomNumber=random.random()
+        #randomNumber=round(38+(random.random()/10),2)
+        global ds18Timestamp,ds18Temp,heaterPower
         form = PowerState()
+        
 
         if form.validate_on_submit() :
 
@@ -134,9 +133,10 @@ def components():
                 PowerState.lampState = SubmitField('ON')
             elif lampValue == 'ON':
                 PowerState.lampState = SubmitField('OFF')   
-
         form = PowerState() 
-        return render_template('components.html', form=form, randomNumber=randomNumber)
+
+
+        return render_template('components.html', form=form, ds18Timestamp=ds18Timestamp,ds18Temp=ds18Temp,heaterPower=heaterPower)
   
 
 class chartsForm(FlaskForm):
@@ -306,13 +306,30 @@ def about():
         return render_template("about.html")   
 
 @socketio.on('message')
-def handle_message(message):
-    print('received message: ' + str(message))    
+def handleMessage(msg):
+	print('Message: ' + msg)
+	send(msg, broadcast=True)
 
-@socketio.on('aaa')
-def test_connect(mensagem2):
-    print("AAAAAAAAAAAAAA", mensagem2)
-    socketio.emit('aaa_response', 'voltou')    
+@socketio.on('randomNumber')
+def handle_message(rNumber):
+    global randomNumber
+    randomNumber=rNumber
+    print('received NUMBER: ', rNumber)      
+
+@socketio.on('ds18b20')
+def handle_message(stamp,temp,power):
+    global ds18Timestamp,ds18Temp,heaterPower
+    ds18Timestamp=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(stamp))
+    ds18Temp=temp
+    heaterPower=power
+    print('received NUMBER: ')        
+
+global randomNumber
+randomNumber=0
+global ds18Timestamp,ds18Temp,heaterPower
+ds18Timestamp=0
+ds18Temp=0
+heaterPower=0
 
 if __name__ == "__main__":
     app.debug = True

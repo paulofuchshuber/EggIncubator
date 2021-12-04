@@ -2,15 +2,13 @@
     
     <title>Components</title>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script> -->
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <link rel="stylesheet" href="static/css/components.css">
 
-    <script type="text/javascript">
-        window.setTimeout(function () {
-        window.location.reload();
-        }, 1000);
-        </script>
-
+    
 </head>
 
 {% extends 'base.html' %}
@@ -20,12 +18,37 @@
 {% block content %}
 
 <body>
-    <script type="text/javascript" charset="utf-8">
-        var socket = io();
-        socket.on('connect', function() {
-            socket.emit('message', 'I\'m connected!');
+    <script type="text/javascript">
+        
+        $(document).ready(function() {
+        
+            var socket = io();
+        
+            socket.on('message', function(msg) {
+                $("#messages").append('<li>'+msg+'</li>');
+                console.log('Received message');
+            });
+        
         });
-    </script>
+        </script>
+    <!-- <script type="text/javascript" charset="utf-8">
+        // var timer = function() {
+        // setTimeout(function(){ window.location.reload(); }, 1500);
+        // };
+        // timer();
+        function isDisplayChecked() {
+            // Get the checkbox
+            var checkBox = document.getElementById("myCheck");
+            // Get the output text
+            var text = document.getElementById("text");
+            // If the checkbox is checked, display the output text
+            if (checkBox.checked == true){
+              text.style.display = "block";
+            } else {
+              text.style.display = "none";
+            }
+          }
+    </script> -->
 
     <div class='main'>
 
@@ -34,8 +57,14 @@
         <br />
 
         <h1>
-            {{randomNumber}}
-        <form class="form form-horizontal" method="post" role="form">
+            <!-- {{randomNumber}} -->
+            Ultimo Update: {{ds18Timestamp}}
+            <br />
+            Temperature: {{ds18Temp}}
+            <br />
+            Potencia: {{heaterPower}}%
+            <br />
+            <form class="form form-horizontal" method="post" role="form">
             {{ form.hidden_tag() }}
             {{ wtf.form_errors(form, hiddens="only") }}
           
@@ -44,8 +73,23 @@
             <br />
             {{ wtf.form_field(form.lampState) }}
 
+            <ul id="messages"></ul>
+
         </form>
         </h1>
+        
+        <br />
+
+        <!-- <label class="switch">
+            <input type="checkbox" {{checked}}>
+            <span class="slider round"></span>
+        </label> -->
+        Checkbox:   
+        <input type="checkbox" {{checked}} id="myCheck" onclick="isDisplayChecked()">
+        <p id="text" style="display:none">Checkbox is CHECKED!</p>
+        <br />
+        <br />
+
 <!--           
         {{ wtf.quick_form(form) }}
          -->

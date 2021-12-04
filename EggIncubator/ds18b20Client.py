@@ -4,8 +4,28 @@ import os
 import glob
 import time
 import dynamoFunctions
+from socketIO_client import SocketIO
+import signal
 
-#ds18b20
+#SOCKET SETTINGS
+def handler(signum, frame):
+    print('Action took too much time')
+    raise Exception('Action took too much time')
+    
+
+signal.signal(signal.SIGALRM, handler)
+signal.alarm(3) #Set the parameter to the amount of seconds you want to wait
+
+try:
+    socketIO = SocketIO('192.168.0.104', 5000)
+    print("SOCKET CONNECTED")
+except:
+    print("Erro ao Conectar!")
+    print("")
+signal.alarm(3)
+
+
+#ds18b20 SETTINGS
  
 os.system('modprobe w1-gpio')           #ds18b20 lib
 os.system('modprobe w1-therm')
@@ -76,11 +96,11 @@ def main():
 
     startTimer=time.time()
 
-    time.sleep(0.1)
+    time.sleep(0.1)    
     lastTemp=tempRead
     lastPower=power
     tempRead=read_temp()
-
+    
     #PID Cicle
     error = setpoint - tempRead
     P = error*kP
@@ -103,7 +123,19 @@ def main():
     if (tempRead<minTemp):
         minTemp=tempRead
     elif (tempRead>maxTemp):
-        maxTemp=tempRead        
+        maxTemp=tempRead
+        
+    #SOCKET:
+    try:
+        socketIO.emit('ds18b20',int((time.time())),round(tempRead,2),round(power,2))
+        socketIO.emit('message','Oi')
+        print('Sent: ',round(tempRead,2),"  ",round(power,2),"%")
+        print("")
+    except:
+        print("Erro ao enviar informação!")
+        print("")
+    signal.alarm(3)
+        
 
     elapsedTime=(time.time())-startTimer
     totalTimer+=elapsedTime
@@ -125,6 +157,7 @@ def main():
         # print("Total Tempo decorrido: ",round(totalTimer,2)," Med. Pond: ", round(weigAverTemp,2))
         # print("minTemp: ",round(minTemp,2)," maxTemp: ",round(maxTemp,2)," Media Pot: ",round(weigAverPower,2))
         # print("")
+        signal.alarm(10)
         Tstamp='ds18b20'+'#'+str(int((time.time())))
         print("")
         dynamoFunctions.genericPutKW(partitionKey,Tstamp,TemperatureAverage=weigAverTemp,MinimumTemp=minTemp,MaximumTemp=maxTemp,Power=weigAverPower)
@@ -141,7 +174,7 @@ def main():
 if __name__ == "__main__":
 
     global partitionKey
-    partitionKey='testeRolagem2'
+    partitionKey='testeSocket'
     while(1):
         main()
 
