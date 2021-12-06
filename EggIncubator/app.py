@@ -110,7 +110,9 @@ def components():
         global randomNumber
         #your code here
         #randomNumber=round(38+(random.random()/10),2)
-        global ds18Timestamp,ds18Temp,heaterPower
+
+        global ds18b20Data,dht22Data,dht22extData
+
         form = PowerState()
         
 
@@ -136,7 +138,7 @@ def components():
         form = PowerState() 
 
 
-        return render_template('components.html', form=form, ds18Timestamp=ds18Timestamp,ds18Temp=ds18Temp,heaterPower=heaterPower)
+        return render_template('components.html', form=form, ds18b20Data=ds18b20Data,dht22Data=dht22Data,dht22extData=dht22extData)
   
 
 class chartsForm(FlaskForm):
@@ -312,15 +314,24 @@ def handleMessage(msg):
 
 @socketio.on('ds18b20')
 def handle_message(msg):
-    global ds18Timestamp
-    global ds18Temp
-    global heaterPower
-    ds18Timestamp=msg.get('stamp')
-    ds18Temp=msg.get('temp')
-    heaterPower=msg.get('power')
-    print('ROTA 2: ', msg)     
-    print(type(msg))
+    global ds18b20Data
+    ds18b20Data=msg
+    print('ds18b20: ', msg)     
     emit('ds18b20',msg, broadcast=True)   
+
+@socketio.on('DHT22')
+def handle_message(msg):
+    global dht22Data
+    dht22Data=msg
+    print('DHT22: ', msg)     
+    emit('DHT22',msg, broadcast=True)       
+
+@socketio.on('DHT22ext')
+def handle_message(msg):
+    global dht22extData
+    dht22extData=msg
+    print('DHT22ext: ', msg)     
+    emit('DHT22ext',msg, broadcast=True)         
 
 # @socketio.on('ds18b20')
 # def handle_message(stamp,temp,power):
@@ -332,10 +343,24 @@ def handle_message(msg):
 
 global randomNumber
 randomNumber=0
-global ds18Timestamp,ds18Temp,heaterPower
-ds18Timestamp=0
-ds18Temp=0
-heaterPower=0
+global ds18b20Data
+global dht22Data
+global dht22extData
+ds18b20Data={
+    'stamp' : str(0),
+    'temp' : str(0),
+    'power' : str(0)
+    }
+dht22Data={
+    'stampDHT' : str(0),
+    'tempDHT' : str(0),
+    'HumidityDHT' : str(0)
+    }
+dht22extData={
+    'stampDHText' : str(0),
+    'tempDHText' : str(0),
+    'HumidityDHText' : str(0)
+    }       
 
 if __name__ == "__main__":
     app.debug = True

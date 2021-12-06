@@ -33,7 +33,23 @@
                 $("#stamp").text(data.stamp);
                 $("#temp").text(data.temp);
                 $("#power").text(data.power);
-                console.log('ds18b20');
+                // console.log('ds18b20');
+                // console.log(data);
+            });
+
+            socket.on('DHT22', function(data) {
+                $("#stampDHT").text(data.stampDHT);
+                $("#tempDHT").text(data.tempDHT);
+                $("#HumidityDHT").text(data.HumidityDHT);
+                console.log('DHT22');
+                console.log(data);
+            });
+
+            socket.on('DHT22ext', function(data) {
+                $("#stampDHText").text(data.stampDHText);
+                $("#tempDHText").text(data.tempDHText);
+                $("#HumidityDHText").text(data.HumidityDHText);
+                console.log('DHT22ext');
                 console.log(data);
             });
 
@@ -64,27 +80,50 @@
 
         <br />
 
-        <h1>
-            <!-- {{randomNumber}} -->
+        <h3>
+            DS18B20: 
+            <br/>
+            Ultimo Update: <span id="stamp">{{ds18b20Data.get('stamp')}}</span>
+            <br/>
+            Temperatura: <span id="temp">{{ds18b20Data.get('temp')}}</span> ºC
+            <br/>
+            Potencia: <span id="power">{{ds18b20Data.get(power)}}</span> %
+            <br/>
+            <br/>
+            <hr>
+
+            DHT22: 
+            <br/>
+            Ultimo Update: <span id="stampDHT">{{dht22Data.stampDHT}}</span>
+            <br/>
+            Temperatura: <span id="tempDHT">{{dht22Data.tempDHT}}</span> ºC
+            <br/>
+            Umidade: <span id="HumidityDHT">{{dht22Data.HumidityDHT}}</span> %
+            <br/>
+            <br/>
+            <hr>
+
+            DHT22 Externo: 
+            <br/>
+            Ultimo Update: <span id="stampDHText">{{dht22extData.stampDHText}}</span>
+            <br/>
+            Temperatura: <span id="tempDHText">{{dht22extData.tempDHText}}</span> ºC
+            <br/>
+            Umidade: <span id="HumidityDHText">{{dht22extData.HumidityDHText}}</span> %
+            <br/>
+            <br/>
+            <hr>
 
             <form class="form form-horizontal" method="post" role="form">
                 {{ form.hidden_tag() }}
                 {{ wtf.form_errors(form, hiddens="only") }}
-                {{ wtf.form_field(form.rollEggs) }}
+                Rolar: {{ wtf.form_field(form.rollEggs) }}
             <br />
             <br />
-                {{ wtf.form_field(form.lampState) }}
+                Iluminação: {{ wtf.form_field(form.lampState) }}
             </form>
-            <!-- <ul id="messages"></ul> -->
-
-            Ultimo Update: <span id="stamp">{{ds18Timestamp}}</span>
-            <br/>
-            Temperatura: <span id="temp">{{ds18Temp}}</span> ºC
-            <br/>
-            Potencia: <span id="power">{{heaterPower}}</span> %
-
         
-        </h1>
+        </h3>
         
         <br />
 
@@ -92,11 +131,11 @@
             <input type="checkbox" {{checked}}>
             <span class="slider round"></span>
         </label> -->
-        Checkbox:   
+        <!-- Checkbox:   
         <input type="checkbox" {{checked}} id="myCheck" onclick="isDisplayChecked()">
         <p id="text" style="display:none">Checkbox is CHECKED!</p>
         <br />
-        <br />
+        <br /> -->
 
 <!--           
         {{ wtf.quick_form(form) }}
@@ -117,26 +156,8 @@
             <span class="slider round"></span>
         </label>
         <br />
-        <br />
+        <br /> -->
 
-        <label class="switch">
-            <input type="checkbox">
-            <span class="slider round"></span>
-        </label>
-        <br />
-        <br />
-
-        <label class="switch">
-            <input type="checkbox">
-            <span class="slider round"></span>
-        </label>
-        <br />
-        <br />
-        
-        <label class="switch">
-            <input type="checkbox">
-            <span class="slider round"></span>
-        </label> -->
     </h1>
 
     </div>
