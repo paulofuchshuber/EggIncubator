@@ -123,31 +123,36 @@ def main():
     global lastTempExt
     global lastHumid
     global partitionKey
+    global totalTimer1, totalTimer2
 
-    timeinterval=30
-    timeout=60
+    readingInterval=30
+    uploadInterval=300
 
-    #signal.alarm(timeout)
+    startTimer=time.time()
+
     pinDHT1=23
     pinDHT2=24
     
     now = int(time.time())
-    threading.Timer(interval=timeinterval, function=main).start()
+    threading.Timer(interval=readingInterval, function=main).start()
     obj = MyDb()
     
     Temperature , Humidity = obj.sensor_value(pinDHT1) 
-    #signal.alarm(timeout)
     TemperatureExt , HumidityExt = obj.sensor_value(pinDHT2)
-    #signal.alarm(timeout)
+    print('')
 
     deltaTemp=abs(Temperature-lastTemp)
     deltaHumid=abs(Humidity-lastHumid)
+
+    elapsedTime=(time.time())-startTimer
+
     #print (deltaTemp)
     if (now is not None) and (deltaTemp<2.5) and (Temperature < 50) and (Humidity <=100) and (Temperature > 0) and (deltaHumid<5):   #alterar para: se dia e hora for nulo, obter dia e hora, talvez em while...
-        #obj.put(pkID=partitionKey, Tstamp=str(now), Temperature=str(round(Temperature,3)), Humidity=str(round(Humidity,3)))
-        counter = counter + 1
-        print("{0:0} - Uploaded Sample on Cloud T:{1:0.1f},H:{2:0.1f} ".format(counter-1, Temperature, Humidity))
-        #signal.alarm(timeout)
+        if (totalTimer1>=uploadInterval):
+            obj.put(pkID=partitionKey, Tstamp=str(now), Temperature=str(round(Temperature,3)), Humidity=str(round(Humidity,3)))
+            counter = counter + 1
+            print("{0:0} - Uploaded Sample on Cloud T:{1:0.1f},H:{2:0.1f} ".format(counter-1, Temperature, Humidity))
+            totalTimer1=0
         data={
         'stampDHT' : str(datetime.datetime.fromtimestamp(now).strftime('%d-%m-%Y %H:%M:%S')),
         'tempDHT' : str(round(Temperature,1)),
@@ -160,15 +165,16 @@ def main():
             print("")
     lastTemp=Temperature
     lastHumid=Humidity
-    #signal.alarm(timeout)
+    
 
     deltaTempExt=abs(TemperatureExt-lastTempExt)
     #print (deltaTempExt)
     if (now is not None) and (deltaTempExt<2) and (TemperatureExt < 50) and (HumidityExt <=100) and (TemperatureExt > 0):   #alterar para: se dia e hora for nulo, obter dia e hora, talvez em while...
-        #obj.putExt(pkID=partitionKey, Tstamp=str(now), TemperatureExt=str(round(TemperatureExt,3)), HumidityExt=str(round(HumidityExt,3)))
-        #counter = counter + 1
-        print("{0:0} - Uploaded Sample on Cloud T (Ext):{1:0.1f},H:{2:0.1f} ".format(counter-1, TemperatureExt, HumidityExt))
-        #signal.alarm(timeout)
+        if (totalTimer2>=uploadInterval):
+            obj.putExt(pkID=partitionKey, Tstamp=str(now), TemperatureExt=str(round(TemperatureExt,3)), HumidityExt=str(round(HumidityExt,3)))
+            #counter = counter + 1
+            print("{0:0} - Uploaded Sample on Cloud T (Ext):{1:0.1f},H:{2:0.1f} ".format(counter-1, TemperatureExt, HumidityExt))
+            totalTimer2=0
         data={
         'stampDHText' : str(datetime.datetime.fromtimestamp(now).strftime('%d-%m-%Y %H:%M:%S')),
         'tempDHText' : str(round(TemperatureExt,1)),
@@ -180,7 +186,9 @@ def main():
             print("Erro ao enviar informação!")
             print("")        
     lastTempExt=TemperatureExt
-    #signal.alarm(timeout+timeinterval)
+    totalTimer1+=elapsedTime
+    totalTimer2+=elapsedTime
+    
     
 def checkPartitionKeys():
     existence=0
@@ -210,12 +218,13 @@ def checkPartitionKeys():
 if __name__ == "__main__":
     global counter
     counter = 0
-    global lastTemp
-    global lastTempExt
+    global lastTemp,lastTempExt,lastHumid
     lastTemp=0
     lastTempExt=0
-    global lastHumid
     lastHumid=0
+    global totalTimer1, totalTimer2
+    totalTimer1=0
+    totalTimer2=0
     global partitionKey
     partitionKey='testeSocket'
 
