@@ -23,12 +23,20 @@
         $(document).ready(function() {
         
             var socket = io();
-        
-            socket.on('message', function(msg) {
-                $("#messages").append('<li>'+msg+'</li>');
-                console.log('Received message');
+
+            socket.on('message', function(data) {
+                $("#messages").text(data);
+                console.log(data);
             });
-        
+
+            socket.on('ds18b20', function(data) {
+                $("#stamp").text(data.stamp);
+                $("#temp").text(data.temp);
+                $("#power").text(data.power);
+                console.log('ds18b20');
+                console.log(data);
+            });
+
         });
         </script>
     <!-- <script type="text/javascript" charset="utf-8">
@@ -58,24 +66,24 @@
 
         <h1>
             <!-- {{randomNumber}} -->
-            Ultimo Update: {{ds18Timestamp}}
-            <br />
-            Temperature: {{ds18Temp}}
-            <br />
-            Potencia: {{heaterPower}}%
-            <br />
+
             <form class="form form-horizontal" method="post" role="form">
-            {{ form.hidden_tag() }}
-            {{ wtf.form_errors(form, hiddens="only") }}
-          
-            {{ wtf.form_field(form.rollEggs) }}
+                {{ form.hidden_tag() }}
+                {{ wtf.form_errors(form, hiddens="only") }}
+                {{ wtf.form_field(form.rollEggs) }}
             <br />
             <br />
-            {{ wtf.form_field(form.lampState) }}
+                {{ wtf.form_field(form.lampState) }}
+            </form>
+            <!-- <ul id="messages"></ul> -->
 
-            <ul id="messages"></ul>
+            Ultimo Update: <span id="stamp">{{ds18Timestamp}}</span>
+            <br/>
+            Temperatura: <span id="temp">{{ds18Temp}}</span> ºC
+            <br/>
+            Potencia: <span id="power">{{heaterPower}}</span> %
 
-        </form>
+        
         </h1>
         
         <br />

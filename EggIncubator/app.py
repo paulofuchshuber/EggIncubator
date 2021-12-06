@@ -5,7 +5,7 @@ import datetime
 from boto3.dynamodb.conditions import Key, Attr
 from flask_wtf import FlaskForm
 from wtforms import SelectField, SubmitField
-from flask_socketio import SocketIO, send
+from flask_socketio import SocketIO, send, emit
 from flask_bootstrap    import Bootstrap
 from flask_cors import CORS
 import random
@@ -310,19 +310,25 @@ def handleMessage(msg):
 	print('Message: ' + msg)
 	send(msg, broadcast=True)
 
-@socketio.on('randomNumber')
-def handle_message(rNumber):
-    global randomNumber
-    randomNumber=rNumber
-    print('received NUMBER: ', rNumber)      
-
 @socketio.on('ds18b20')
-def handle_message(stamp,temp,power):
-    global ds18Timestamp,ds18Temp,heaterPower
-    ds18Timestamp=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(stamp))
-    ds18Temp=temp
-    heaterPower=power
-    print('received NUMBER: ')        
+def handle_message(msg):
+    global ds18Timestamp
+    global ds18Temp
+    global heaterPower
+    ds18Timestamp=msg.get('stamp')
+    ds18Temp=msg.get('temp')
+    heaterPower=msg.get('power')
+    print('ROTA 2: ', msg)     
+    print(type(msg))
+    emit('ds18b20',msg, broadcast=True)   
+
+# @socketio.on('ds18b20')
+# def handle_message(stamp,temp,power):
+#     global ds18Timestamp,ds18Temp,heaterPower
+#     ds18Timestamp=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(stamp))
+#     ds18Temp=temp
+#     heaterPower=power
+#     print('received NUMBER: ')        
 
 global randomNumber
 randomNumber=0

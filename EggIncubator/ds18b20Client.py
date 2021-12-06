@@ -1,11 +1,13 @@
 import RPi.GPIO as GPIO
 import time
+import datetime
 import os
 import glob
 import time
 import dynamoFunctions
 from socketIO_client import SocketIO
 import signal
+import json
 
 #SOCKET SETTINGS
 def handler(signum, frame):
@@ -124,11 +126,20 @@ def main():
         minTemp=tempRead
     elif (tempRead>maxTemp):
         maxTemp=tempRead
-        
+
+    now=datetime.datetime.fromtimestamp(int((time.time()))).strftime('%d-%m-%Y %H:%M:%S')
+    data={
+        'stamp' : str(now),
+        'temp' : str(round(tempRead,1)),
+        'power' : str(round(power,1))
+        }
     #SOCKET:
+    signal.alarm(3)
+    #jeison=json.loads(str(data))
     try:
-        socketIO.emit('ds18b20',int((time.time())),round(tempRead,2),round(power,2))
-        socketIO.emit('message','Oi')
+        print(data)
+        #socketIO.emit('message',str(data))
+        socketIO.emit('ds18b20',data)
         print('Sent: ',round(tempRead,2),"  ",round(power,2),"%")
         print("")
     except:
@@ -157,7 +168,7 @@ def main():
         # print("Total Tempo decorrido: ",round(totalTimer,2)," Med. Pond: ", round(weigAverTemp,2))
         # print("minTemp: ",round(minTemp,2)," maxTemp: ",round(maxTemp,2)," Media Pot: ",round(weigAverPower,2))
         # print("")
-        signal.alarm(10)
+        signal.alarm(8)
         Tstamp='ds18b20'+'#'+str(int((time.time())))
         print("")
         dynamoFunctions.genericPutKW(partitionKey,Tstamp,TemperatureAverage=weigAverTemp,MinimumTemp=minTemp,MaximumTemp=maxTemp,Power=weigAverPower)

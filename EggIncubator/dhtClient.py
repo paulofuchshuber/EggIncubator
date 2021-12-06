@@ -7,10 +7,13 @@ try:
     from boto3.dynamodb.conditions import Key
     import Adafruit_DHT
     import threading
+    from socketIO_client import SocketIO, LoggingNamespace
     print("All Modules Loaded ...... ")
 except Exception as e:
     print("Error {}".format(e))
 
+#socketIO = SocketIO('192.168.0.104', 5000)
+#print("SOCKET CONNECTED")
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('EggIncubator')
@@ -173,7 +176,7 @@ if __name__ == "__main__":
     global lastHumid
     lastHumid=0
     global partitionKey
-    partitionKey='testeRolagem2'
+    partitionKey='testeSocket'
 
     checkPartitionKeys()
     print('enter')
