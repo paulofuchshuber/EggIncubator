@@ -24,9 +24,13 @@
         
         var socket = io();
 
+        imageContainer.setAttribute('src','static/img/TESTE.jpg');
 
-        socket.on('cameraresponse', function(data) {
-            console.log(data)
+        if(imageContainer.height == 0){                                       
+        imageContainer.setAttribute('src','static/img/TESTE.jpg');
+        }
+
+        socket.on('cameraRefresh', function() {
             document.getElementById('imageContainer').src = "static/img/TESTE.jpg?random="+new Date().getTime();
             
         });

@@ -302,7 +302,8 @@ def settings():
         return redirect(url_for('login'))
     else:
         #your code here     
-        return render_template("settings.html")      
+        global lastImage
+        return render_template("settings.html",lastImage=lastImage)      
 
 @app.route('/about')
 def about():  
@@ -340,34 +341,19 @@ def handle_message(msg):
 
 @socketio.on('camera')
 def handle_message(image):
-    global im
+    global lastImage
     print('IMAGE RECEIVED',type(image.get('image_data')))
     print('')
     reponse=image.get('image_data')
     im = Image.open(BytesIO(base64.b64decode(reponse)))
+    lastImage=im
     im.save('static/img/TESTE.jpg')
 
-    with open("static/img/TESTE.jpg", "rb") as img:
-        image = base64.b64encode(img.read())
-        data = image.decode() # not just image
-        print(json.dumps(data))
+    emit('cameraRefresh', broadcast=True)     
+  
 
-    emit('cameraresponse',json.dumps(data), broadcast=True)
-    # global dht22extData
-    # dht22extData=msg
-    # print('DHT22ext: ', msg)     
-    # emit('DHT22ext',msg, broadcast=True)           
-
-# @socketio.on('ds18b20')
-# def handle_message(stamp,temp,power):
-#     global ds18Timestamp,ds18Temp,heaterPower
-#     ds18Timestamp=time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(stamp))
-#     ds18Temp=temp
-#     heaterPower=power
-#     print('received NUMBER: ')        
-
-global im
-global randomNumber
+global lastImage
+lastImage=Image.open('static/img/TESTE.jpg')
 randomNumber=0
 global ds18b20Data
 global dht22Data
