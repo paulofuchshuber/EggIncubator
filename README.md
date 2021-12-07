@@ -49,6 +49,7 @@ $pip install RPi.GPIO
 $pip install socketIO-client-2  
 $pip install flask-socketio  
 $pip install eventlet  
+$pip install picamera  
 
 #### DHT Sensor Library:  
 $git clone https://github.com/adafruit/Adafruit_Python_DHT.git  
