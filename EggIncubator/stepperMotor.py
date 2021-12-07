@@ -6,9 +6,14 @@ import random
 
 socketIO = SocketIO('192.168.0.104', 5000,LoggingNamespace)
 
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BOARD)                #pwm
+GPIO.setwarnings(False)
+
+GPIO.setup(33,GPIO.OUT)                 #heater pin 
+p = GPIO.PWM(33,60)
+p.start(0)
     
-controlPin = [23,26,24,22]
+controlPin = [23,26,24,22]              #stepper Motor Pin
 for pin in controlPin:
     GPIO.setup(pin,GPIO.OUT)
     GPIO.output(pin,0)
@@ -19,6 +24,7 @@ t.start()
 
 def main():
     socketIO.on('rollEggs',on_rollEggs)
+    socketIO.on('lamp',on_lamp)
     socketIO.wait()
     
     #randomNumber=round(38+(random.random()/10),2)
@@ -73,13 +79,25 @@ def on_rollEggs(data):
     print('msg: ',data)
     socketIO.emit('message','Rolou')
     #event.set()
-    
+
+def on_lamp(state):
+    if state == 'OFF':
+        #p.ChangeDutyCycle(0)
+        print("Lights OFF!")
+        socketIO.emit('message','Ligou')    
+    elif state == 'ON':
+        #p.ChangeDutyCycle(10)
+        print("Lights ON!")
+        socketIO.emit('message','Desligou')    
+
+
 
 if __name__ == '__main__':
     print('calibrando...')
     rollThemCW()
     position='RIGHT'
     print('feito')
+
     while(1):
         main()
         

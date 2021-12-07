@@ -127,7 +127,7 @@ def main():
     elif (tempRead>maxTemp):
         maxTemp=tempRead
 
-    now=datetime.datetime.fromtimestamp(int((time.time()))).strftime('%d-%m-%Y %H:%M:%S')
+    now=datetime.datetime.fromtimestamp(int((time.time()))).strftime('%d/%m/%Y %H:%M:%S')
     data={
         'stamp' : str(now),
         'temp' : str(round(tempRead,1)),
@@ -185,7 +185,7 @@ def main():
 if __name__ == "__main__":
 
     global partitionKey
-    partitionKey='testeSocket'
+    partitionKey='testeSocket2'
     while(1):
         main()
 

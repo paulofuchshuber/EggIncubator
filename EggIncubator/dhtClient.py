@@ -125,7 +125,7 @@ def main():
     global partitionKey
     global totalTimer1, totalTimer2
 
-    readingInterval=30
+    readingInterval=120
     uploadInterval=300
 
     startTimer=time.time()
@@ -154,7 +154,7 @@ def main():
             print("{0:0} - Uploaded Sample on Cloud T:{1:0.1f},H:{2:0.1f} ".format(counter-1, Temperature, Humidity))
             totalTimer1=0
         data={
-        'stampDHT' : str(datetime.datetime.fromtimestamp(now).strftime('%d-%m-%Y %H:%M:%S')),
+        'stampDHT' : str(datetime.datetime.fromtimestamp(now).strftime('%d/%m/%Y %H:%M:%S')),
         'tempDHT' : str(round(Temperature,1)),
         'HumidityDHT' : str(round(Humidity,1))
         }
@@ -176,7 +176,7 @@ def main():
             print("{0:0} - Uploaded Sample on Cloud T (Ext):{1:0.1f},H:{2:0.1f} ".format(counter-1, TemperatureExt, HumidityExt))
             totalTimer2=0
         data={
-        'stampDHText' : str(datetime.datetime.fromtimestamp(now).strftime('%d-%m-%Y %H:%M:%S')),
+        'stampDHText' : str(datetime.datetime.fromtimestamp(now).strftime('%d/%m/%Y %H:%M:%S')),
         'tempDHText' : str(round(TemperatureExt,1)),
         'HumidityDHText' : str(round(HumidityExt,1))
         }        
@@ -226,7 +226,7 @@ if __name__ == "__main__":
     totalTimer1=0
     totalTimer2=0
     global partitionKey
-    partitionKey='testeSocket'
+    partitionKey='testeSocket2'
 
     checkPartitionKeys()
     print('enter')
