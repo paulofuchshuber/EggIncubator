@@ -78,41 +78,45 @@
 
     <h1>
 
-        <br />
+        <!-- 
+        <div class="boxed">
+            This text is enclosed in a box.
+        </div> -->
 
+        <br />
         <h3>
             DS18B20: 
-            <br/>
-            Ultimo Update: <span id="stamp">{{ds18b20Data.get('stamp')}}</span>
             <br/>
             Temperatura: <span id="temp">{{ds18b20Data.get('temp')}}</span> ºC
             <br/>
             Potencia: <span id="power">{{ds18b20Data.get(power)}}</span> %
-            <br/>
-            <br/>
-            <hr>
+            <h5>Ultimo Update: <span id="stamp">{{ds18b20Data.get('stamp')}}</span></h5>
+        </h3>
+        <hr>
 
+        <h3>
             DHT22: 
-            <br/>
-            Ultimo Update: <span id="stampDHT">{{dht22Data.stampDHT}}</span>
             <br/>
             Temperatura: <span id="tempDHT">{{dht22Data.tempDHT}}</span> ºC
             <br/>
             Umidade: <span id="HumidityDHT">{{dht22Data.HumidityDHT}}</span> %
-            <br/>
-            <br/>
-            <hr>
+            <h5>Ultimo Update: <span id="stampDHT">{{dht22Data.stampDHT}}</span></h5>
+        </h3>            
+        <hr>
 
+        <h3>
             DHT22 Externo: 
-            <br/>
-            Ultimo Update: <span id="stampDHText">{{dht22extData.stampDHText}}</span>
             <br/>
             Temperatura: <span id="tempDHText">{{dht22extData.tempDHText}}</span> ºC
             <br/>
             Umidade: <span id="HumidityDHText">{{dht22extData.HumidityDHText}}</span> %
+            <h5>Ultimo Update: <span id="stampDHText">{{dht22extData.stampDHText}}</span></h5>
+        </h3>               
+        <hr>
             <br/>
-            <br/>
-            <hr>
+            
+            
+                 
 
             <form class="form form-horizontal" method="post" role="form">
                 {{ form.hidden_tag() }}
@@ -123,7 +127,7 @@
                 Iluminação: {{ wtf.form_field(form.lampState) }}
             </form>
         
-        </h3>
+        
         
         <br />
 
@@ -136,19 +140,6 @@
         <p id="text" style="display:none">Checkbox is CHECKED!</p>
         <br />
         <br /> -->
-
-<!--           
-        {{ wtf.quick_form(form) }}
-         -->
-
-        <!-- <h3>
-        <form method="post">
-            <input type ="submit" name="rollEggs" value="left">
-            <br />
-            <br />
-            <input type ="submit" name="lampState" value="off">
-        </form>
-        </h3> -->
 
         <!-- <br />
         <label class="switch">

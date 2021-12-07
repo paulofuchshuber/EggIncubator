@@ -10,7 +10,10 @@ from flask_bootstrap    import Bootstrap
 from flask_cors import CORS
 import random
 import dynamoFunctions
-
+import json 
+import base64
+from io import BytesIO
+from PIL import Image
 
 
 app = Flask(__name__)
@@ -133,8 +136,10 @@ def components():
                 socketio.emit('rollEggs', 'LEFT')                
             elif lampValue == 'OFF':
                 PowerState.lampState = SubmitField('ON')
+                socketio.emit('lamp', 'ON')                
             elif lampValue == 'ON':
-                PowerState.lampState = SubmitField('OFF')   
+                PowerState.lampState = SubmitField('OFF')  
+                socketio.emit('lamp', 'OFF')                 
         form = PowerState() 
 
 
@@ -296,7 +301,7 @@ def settings():
     if g.user is None:
         return redirect(url_for('login'))
     else:
-        #your code here    
+        #your code here     
         return render_template("settings.html")      
 
 @app.route('/about')
@@ -333,6 +338,26 @@ def handle_message(msg):
     print('DHT22ext: ', msg)     
     emit('DHT22ext',msg, broadcast=True)         
 
+@socketio.on('camera')
+def handle_message(image):
+    global im
+    print('IMAGE RECEIVED',type(image.get('image_data')))
+    print('')
+    reponse=image.get('image_data')
+    im = Image.open(BytesIO(base64.b64decode(reponse)))
+    im.save('static/img/TESTE.jpg')
+
+    with open("static/img/TESTE.jpg", "rb") as img:
+        image = base64.b64encode(img.read())
+        data = image.decode() # not just image
+        print(json.dumps(data))
+
+    emit('cameraresponse',json.dumps(data), broadcast=True)
+    # global dht22extData
+    # dht22extData=msg
+    # print('DHT22ext: ', msg)     
+    # emit('DHT22ext',msg, broadcast=True)           
+
 # @socketio.on('ds18b20')
 # def handle_message(stamp,temp,power):
 #     global ds18Timestamp,ds18Temp,heaterPower
@@ -341,6 +366,7 @@ def handle_message(msg):
 #     heaterPower=power
 #     print('received NUMBER: ')        
 
+global im
 global randomNumber
 randomNumber=0
 global ds18b20Data

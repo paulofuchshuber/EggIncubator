@@ -60,3 +60,7 @@
   .slider.round:before {
     border-radius: 50%;
   }
+
+  .boxed {
+    border: 1px solid green ;
+  }

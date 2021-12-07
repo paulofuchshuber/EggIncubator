@@ -1,5 +1,8 @@
 <head>
     
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+   
     <title>Settings</title>
 
 </head>
@@ -9,9 +12,37 @@
 
 {% block content %}
 
+<body>
+
+    <br />
+
+    <img id="imageContainer"></img>
+
+    <script type="text/javascript">
+        
+        $(document).ready(function() {
+        
+        var socket = io();
+
+
+        socket.on('cameraresponse', function(data) {
+            console.log(data)
+            document.getElementById('imageContainer').src = "static/img/TESTE.jpg?random="+new Date().getTime();
+            
+        });
+
+
+        });
+        </script>
+
+
     <div class='main'>
 
     <h1>
+
+        <!-- <img src="static/img/TESTE.jpg" alt="teste"> -->
+        <!-- <span id="cameraimg"></span> -->
+
         <br />
         Settings
         <br />
@@ -26,6 +57,7 @@
 
     </div>
 
+</body>
 
 {% endblock %}
 
