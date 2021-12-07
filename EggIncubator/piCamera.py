@@ -16,7 +16,7 @@ with picamera.PiCamera() as camera:
     camera.start_preview()
     i=0
     while(1):
-        time.sleep(1)
+        #time.sleep(1)
         camera.capture('image.jpg',format='jpeg')
         i+=1
         print('shot',i)

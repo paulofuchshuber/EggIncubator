@@ -185,7 +185,7 @@ def main():
 if __name__ == "__main__":
 
     global partitionKey
-    partitionKey='testeSocket2'
+    partitionKey='testeSocket3'
     while(1):
         main()
 
