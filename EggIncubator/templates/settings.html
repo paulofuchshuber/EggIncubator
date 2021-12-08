@@ -8,15 +8,13 @@
 </head>
 
 {% extends 'base.html' %}
-
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block content %}
 
 <body>
 
-    <br />
 
-    <img id="imageContainer"></img>
 
     <script type="text/javascript">
         
@@ -24,14 +22,14 @@
         
         var socket = io();
 
-        imageContainer.setAttribute('src','static/img/TESTE.jpg');
+        imageContainer.setAttribute('src','static/img/piCameraImage.jpg');
 
         if(imageContainer.height == 0){                                       
-        imageContainer.setAttribute('src','static/img/TESTE.jpg');
+        imageContainer.setAttribute('src','static/img/piCameraImage.jpg');
         }
 
         socket.on('cameraRefresh', function() {
-            document.getElementById('imageContainer').src = "static/img/TESTE.jpg?random="+new Date().getTime();
+            document.getElementById('imageContainer').src = "static/img/piCameraImage.jpg?random="+new Date().getTime();
             
         });
 
@@ -39,24 +37,48 @@
         });
         </script>
 
+        <br />
+
+        <div style="display: inline-block;">
+            <img id="imageContainer" ></img>
+
+            <div style="text-align: center;">
+            <br />
+            
+                <form class="form form-horizontal" method="post" role="form">
+                    {{ form.hidden_tag() }}
+                    {{ wtf.form_errors(form, hiddens="only") }}
+                    Rolar: {{ wtf.form_field(form.rollEggs) }}
+                    
+                    <span style="padding-left:20px">
+                        
+                    Iluminação: {{ wtf.form_field(form.lampState) }}
+                </form>
+            </div>
+
+        </div>        
+
 
     <div class='main'>
 
     <h1>
 
-        <!-- <img src="static/img/TESTE.jpg" alt="teste"> -->
-        <!-- <span id="cameraimg"></span> -->
+        <div style="text-align:center">
+        <!-- <form class="form form-horizontal" method="post" role="form">
+            {{ form.hidden_tag() }}
+            {{ wtf.form_errors(form, hiddens="only") }}
+            Rolar: {{ wtf.form_field(form.rollEggs) }}
+            
+            <span style="padding-left:20px">
+                
+            Iluminação: {{ wtf.form_field(form.lampState) }}
+        </form> -->
+        </div>
 
-        <br />
+        <!-- <br />
         Settings
         <br />
-        <input type="range" min="1" max="100" value="50">
-        <br />
-        <input type="range" min="1" max="100" value="50">
-        <br />
-        <input type="range" min="1" max="100" value="50">
-        <br />
-        <input type="range" min="1" max="100" value="50">
+        <input type="range" min="1" max="100" value="50"> -->
     </h1>
 
     </div>

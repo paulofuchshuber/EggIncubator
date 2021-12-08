@@ -17,11 +17,11 @@ with picamera.PiCamera() as camera:
     i=0
     while(1):
         #time.sleep(1)
-        camera.capture('image.jpg',format='jpeg')
+        camera.capture('piCameraShot.jpg',format='jpeg')
         i+=1
         print('shot',i)
         #socketIO.emit('ds18b20',data)
-        with open("image.jpg", "rb") as img:
+        with open("piCameraShot.jpg", "rb") as img:
             image = base64.b64encode(img.read())
             data = image.decode() # not just image
             #print(json.dumps(data))

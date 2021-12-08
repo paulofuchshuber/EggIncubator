@@ -100,11 +100,6 @@ def home():
         return render_template("home.html")   
 
 
-class PowerState(FlaskForm) :
-    rollEggs = SubmitField('LEFT')    
-    lampState = SubmitField('OFF')   
-
-
 @app.route('/components', methods=["POST","GET"])
 def components(): 
     if g.user is None:
@@ -116,34 +111,7 @@ def components():
 
         global ds18b20Data,dht22Data,dht22extData
 
-        form = PowerState()
-        
-
-        if form.validate_on_submit() :
-
-            value=request.form
-            print(value)
-            rollValue=request.form.get('rollEggs')
-            print(rollValue)
-            lampValue=request.form.get('lampState')
-            print(lampValue)
-
-            if rollValue == 'LEFT':
-                PowerState.rollEggs = SubmitField('RIGHT')
-                socketio.emit('rollEggs', 'RIGHT')
-            elif rollValue == 'RIGHT':
-                PowerState.rollEggs = SubmitField('LEFT')
-                socketio.emit('rollEggs', 'LEFT')                
-            elif lampValue == 'OFF':
-                PowerState.lampState = SubmitField('ON')
-                socketio.emit('lamp', 'ON')                
-            elif lampValue == 'ON':
-                PowerState.lampState = SubmitField('OFF')  
-                socketio.emit('lamp', 'OFF')                 
-        form = PowerState() 
-
-
-        return render_template('components.html', form=form, ds18b20Data=ds18b20Data,dht22Data=dht22Data,dht22extData=dht22extData)
+        return render_template('components.html', ds18b20Data=ds18b20Data,dht22Data=dht22Data,dht22extData=dht22extData)
   
 
 class chartsForm(FlaskForm):
@@ -294,16 +262,44 @@ def queryData(partitionKey):
 
     return (Tstamps,Temperatures,Humidities)
     
-    
+class PowerState(FlaskForm) :
+    rollEggs = SubmitField('LEFT')    
+    lampState = SubmitField('OFF')       
 
-@app.route('/settings')
+@app.route('/settings', methods=["POST","GET"])
 def settings(): 
     if g.user is None:
         return redirect(url_for('login'))
     else:
         #your code here     
         global lastImage
-        return render_template("settings.html",lastImage=lastImage)      
+
+        form = PowerState()
+        
+
+        if form.validate_on_submit() :
+
+            value=request.form
+            print(value)
+            rollValue=request.form.get('rollEggs')
+            print(rollValue)
+            lampValue=request.form.get('lampState')
+            print(lampValue)
+
+            if rollValue == 'LEFT':
+                PowerState.rollEggs = SubmitField('RIGHT')
+                socketio.emit('rollEggs', 'RIGHT')
+            elif rollValue == 'RIGHT':
+                PowerState.rollEggs = SubmitField('LEFT')
+                socketio.emit('rollEggs', 'LEFT')                
+            elif lampValue == 'OFF':
+                PowerState.lampState = SubmitField('ON')
+                socketio.emit('lamp', 'ON')                
+            elif lampValue == 'ON':
+                PowerState.lampState = SubmitField('OFF')  
+                socketio.emit('lamp', 'OFF')                 
+        form = PowerState() 
+        return render_template("settings.html",form=form,lastImage=lastImage)      
 
 @app.route('/about')
 def about():  
@@ -347,13 +343,13 @@ def handle_message(image):
     reponse=image.get('image_data')
     im = Image.open(BytesIO(base64.b64decode(reponse)))
     lastImage=im
-    im.save('static/img/TESTE.jpg')
+    im.save('static/img/piCameraImage.jpg')
 
     emit('cameraRefresh', broadcast=True)     
   
 
 global lastImage
-lastImage=Image.open('static/img/TESTE.jpg')
+lastImage=Image.open('static/img/piCameraImage.jpg')
 randomNumber=0
 global ds18b20Data
 global dht22Data
