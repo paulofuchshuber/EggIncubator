@@ -9,9 +9,8 @@ socketIO = SocketIO('192.168.0.104', 5000,LoggingNamespace)
 GPIO.setmode(GPIO.BOARD)                #pwm
 GPIO.setwarnings(False)
 
-GPIO.setup(33,GPIO.OUT)                 #heater pin 
-p = GPIO.PWM(33,60)
-p.start(0)
+lampPort=37
+GPIO.setup(lampPort,GPIO.OUT)                 #lamp pin
     
 controlPin = [23,26,24,22]              #stepper Motor Pin
 for pin in controlPin:
@@ -82,21 +81,21 @@ def on_rollEggs(data):
 
 def on_lamp(state):
     if state == 'OFF':
-        #p.ChangeDutyCycle(0)
+        GPIO.output(lampPort,GPIO.HIGH)
         print("Lights OFF!")
         socketIO.emit('message','Ligou')    
     elif state == 'ON':
-        #p.ChangeDutyCycle(10)
+        GPIO.output(lampPort,GPIO.LOW)
         print("Lights ON!")
         socketIO.emit('message','Desligou')    
 
 
 
 if __name__ == '__main__':
-    print('calibrando...')
-    rollThemCW()
-    position='RIGHT'
-    print('feito')
+    # print('calibrando...')
+    # rollThemCW()
+    # position='RIGHT'
+    # print('feito')
 
     while(1):
         main()

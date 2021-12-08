@@ -119,11 +119,9 @@ def table_insert(keysList):
 
 def main():
     global counter
-    global lastTemp
-    global lastTempExt
-    global lastHumid
+    global lastTemp, lastTempExt, lastHumid,lastHumidExt
     global partitionKey
-    global totalTimer1, totalTimer2,startTimer1,startTimer2
+    global startTimer1,startTimer2
 
     readingInterval=60  #min = 60
     uploadInterval=300
@@ -133,13 +131,15 @@ def main():
     if(startTimer2==0):
         startTimer2=int(time.time())
     
-    print(totalTimer1)
-    print(totalTimer2)
+
+    now = int(time.time())
+    
+    print(now-startTimer1)
+    print(now-startTimer2)
 
     pinDHT1=23
     pinDHT2=24
     
-    now = int(time.time())
     threading.Timer(interval=readingInterval, function=main).start()
     obj = MyDb()
     
@@ -152,12 +152,11 @@ def main():
 
     #print (deltaTemp)
     if (now is not None) and (deltaTemp<2.5) and (Temperature < 50) and (Humidity <=100) and (Temperature > 0) and (deltaHumid<5):   #alterar para: se dia e hora for nulo, obter dia e hora, talvez em while...
-        if (totalTimer1>=uploadInterval):
+        if (now-startTimer1>=uploadInterval):
             obj.put(pkID=partitionKey, Tstamp=str(now), Temperature=str(round(Temperature,3)), Humidity=str(round(Humidity,3)))
             counter = counter + 1
             print("{0:0} - Uploaded Sample on Cloud T:{1:0.1f},H:{2:0.1f} ".format(counter-1, Temperature, Humidity))
-            totalTimer1=0
-            startTimer1=0
+            startTimer1=int(time.time())
         data={
         'stampDHT' : str(datetime.datetime.fromtimestamp(now).strftime('%d/%m/%Y %H:%M:%S')),
         'tempDHT' : str(round(Temperature,1)),
@@ -173,14 +172,14 @@ def main():
     
 
     deltaTempExt=abs(TemperatureExt-lastTempExt)
+    deltaHumidExt=abs(HumidityExt-lastHumidExt)
     #print (deltaTempExt)
-    if (now is not None) and (deltaTempExt<2) and (TemperatureExt < 50) and (HumidityExt <=100) and (TemperatureExt > 0):   #alterar para: se dia e hora for nulo, obter dia e hora, talvez em while...
-        if (totalTimer2>=uploadInterval):
+    if (now is not None) and (deltaTempExt<2) and (TemperatureExt < 50) and (HumidityExt <=100) and (TemperatureExt > 0) and (deltaHumidExt<5):   #alterar para: se dia e hora for nulo, obter dia e hora, talvez em while...
+        if (now-startTimer2>=uploadInterval):
             obj.putExt(pkID=partitionKey, Tstamp=str(now), TemperatureExt=str(round(TemperatureExt,3)), HumidityExt=str(round(HumidityExt,3)))
             #counter = counter + 1
             print("{0:0} - Uploaded Sample on Cloud T (Ext):{1:0.1f},H:{2:0.1f} ".format(counter-1, TemperatureExt, HumidityExt))
-            totalTimer2=0
-            startTimer2=0
+            startTimer2=int(time.time())
         data={
         'stampDHText' : str(datetime.datetime.fromtimestamp(now).strftime('%d/%m/%Y %H:%M:%S')),
         'tempDHText' : str(round(TemperatureExt,1)),
@@ -192,9 +191,8 @@ def main():
             print("Erro ao enviar informação!")
             print("")        
     lastTempExt=TemperatureExt
+    lastHumidExt=HumidityExt
 
-    totalTimer1=int(time.time())-startTimer1
-    totalTimer2=int(time.time())-startTimer2
     
     
 def checkPartitionKeys():
@@ -225,13 +223,12 @@ def checkPartitionKeys():
 if __name__ == "__main__":
     global counter
     counter = 0
-    global lastTemp,lastTempExt,lastHumid
+    global lastTemp,lastTempExt,lastHumid,lastHumidExt
     lastTemp=0
     lastTempExt=0
     lastHumid=0
-    global totalTimer1, totalTimer2,startTimer1,startTimer2
-    totalTimer1=0
-    totalTimer2=0
+    lastHumidExt=0
+    global startTimer1,startTimer2
     startTimer1=0
     startTimer2=0
     global partitionKey
