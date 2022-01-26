@@ -24,7 +24,7 @@ $pip install Flask-Bootstrap
 
 $env\Scripts\activate	#activate environment  
 $set FLASK_APP=app.py  
-$CD EggIncubator  
+$CD EggIncubator\EggIncubator  
 $flask run --host=0.0.0.0  
 
 # Terminal (Raspberry Pi OS)
@@ -60,5 +60,5 @@ $python setup.py install
 ## Run
 
 $source ./venv/bin/activate  
-$cd EggIncubator  
+$cd EggIncubator/EggIncubator  
 $python applicationName.py
