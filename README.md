@@ -60,6 +60,5 @@ $python setup.py install
 ## Run
 
 $source ./venv/bin/activate  
-$set FLASK_APP=app.py  
 $cd EggIncubator  
-$flask run --host=0.0.0.0  
+$python applicationName.py
