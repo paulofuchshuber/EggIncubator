@@ -68,9 +68,9 @@ p.start(0)
 
 
 setpoint = 38   #em graus celsius
-kP = 60
-kI = 0.1
-kD = 0.5
+kP = 47.7
+kI = 0.2
+kD = 0
 potMax=90
 
 
