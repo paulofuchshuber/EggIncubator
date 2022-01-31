@@ -107,8 +107,6 @@ def main():
     error = setpoint - tempRead
     P = error*kP
     I += error*kI
-    PI=P+I
-    p.ChangeDutyCycle(PI)
     if (I >= potMax-50):            #quando esta esquentando (inicialmente frio) nao acumular muito I
         I=potMax-50
     D = (lastTemp-tempRead)*kD
