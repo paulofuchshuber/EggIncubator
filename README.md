@@ -1,8 +1,8 @@
 # EggIncubator
 
-# Prompt-Command (Windows)
+## Prompt-Command (Windows)
 
-## Requirements:
+### Requirements:
 
 $py -m venv env #create virtual environment  
 $env\Scripts\activate	#activate environment  
@@ -20,16 +20,16 @@ $pip install eventlet
 $pip install gevent-websocket  
 $pip install Flask-Bootstrap  
 
-## Run
+### Run
 
 $env\Scripts\activate	#activate environment  
 $set FLASK_APP=app.py  
 $CD EggIncubator\EggIncubator  
 $flask run --host=0.0.0.0  
 
-# Terminal (Raspberry Pi OS)
+## Terminal (Raspberry Pi OS)
 
-## Requirements:
+### Requirements:
 
 $git clone https://github.com/phfuks/EggIncubator  
 $sudo pip install virtualenv #install virtual environment  
@@ -57,7 +57,7 @@ $cd Adafruit_Python_DHT
 $sudo apt-get install build-essential python-dev  
 $python setup.py install
 
-## Run
+### Run
 
 $source ./venv/bin/activate  
 $cd EggIncubator/EggIncubator  
