@@ -1,5 +1,9 @@
 # EggIncubator
 
+O protótipo utiliza a técnica de controle PID para controlar a temperatura da incubadora e armazena os dados coletados num banco de dados ao longo do tempo. Através de
+uma interface gráfica com o usuário, os mesmos dados sensoriais são apresentados graficamente (temperatura, umidade e nível de gases) ao longo do tempo para rápida inspeção e identificação de instabilidades ou condições de ambiente adversas. Na implementação foi utilizado software livre e hardware de baixo custo para construir um protótipo funcional como prova de conceito visando o mercado de pequenos criadores. Com este protótipo foram realizados experimentos empíricos para avaliar o funcionamento do dispositivo e viabilidade da solução proposta.
+
+
 ## Prompt-Command (Windows)
 
 ### Requirements:
