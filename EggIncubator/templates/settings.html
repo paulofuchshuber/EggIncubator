@@ -18,9 +18,12 @@
 
     <script type="text/javascript">
         
+
         $(document).ready(function() {
         
         var socket = io();
+
+        
 
         imageContainer.setAttribute('src','static/img/piCameraImage.jpg');
 
@@ -29,8 +32,8 @@
         }
 
         socket.on('cameraRefresh', function() {
-            document.getElementById('imageContainer').src = "static/img/piCameraImage.jpg?random="+new Date().getTime();
-            
+            document.getElementById('imageContainer').src = "static/img/piCameraImage.jpg?random="+new Date().getTime();   
+            socket.emit('CameraViwed','ImHere');
         });
 
 
