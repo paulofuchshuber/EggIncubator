@@ -361,7 +361,7 @@ def handle_message(image):
 
     emit('cameraRefresh', broadcast=True) 
 
-    if(time.time()-lastImageTime>10 and time.time()-lastImageTime<1600000000):    
+    if(time.time()-lastImageTime>60 and time.time()-lastImageTime<1600000000):    
         print('CAMERA TIMEOUT')
         emit('cameraTimeout')
         lastImageTime=0
