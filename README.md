@@ -29,7 +29,7 @@ $pip install Flask-Bootstrap
 $env\Scripts\activate	#activate environment  
 $set FLASK_APP=app.py  
 $CD EggIncubator\EggIncubator  
-$flask run --host=0.0.0.0 --port80  
+$flask run --host=0.0.0.0 --port 80  
 
 ## Terminal (Raspberry Pi OS)
 
