@@ -1,3 +1,4 @@
+from socket import socket
 from flask import Flask, render_template, request, url_for, redirect, session, g
 import boto3
 import time
@@ -49,7 +50,7 @@ def main():
 
 
 @app.route('/login', methods=['GET', 'POST'])
-def login():    
+def login():        
     g.user=None
     for key in list(session.keys()):
         session.pop(key)
@@ -97,6 +98,7 @@ def home():
         return redirect(url_for('login'))
     else:
         #your code here
+        print('1111111111111111111',session.get('user_id'))      
         return render_template("home.html")   
 
 
@@ -131,6 +133,7 @@ def charts():
         return redirect(url_for('login'))
     else:
         #your code here  
+
         lastPartitionKey=callManager('KeyManager2')[-1]
         getData = dynamoFunctions.genericQueryData(lastPartitionKey)
          
@@ -221,6 +224,7 @@ def forms():
         return redirect(url_for('login'))
     else:
         #your code here  
+                
         lastPartitionKey=callManager('KeyManager')[-1]
         getPair=queryData(lastPartitionKey)
 
@@ -272,13 +276,20 @@ def settings():
         return redirect(url_for('login'))
     else:
         #your code here     
+        currentPage = request.url_rule
+        print("start camera:",currentPage)
+        socketio.emit('startCamera') 
+
         global lastImage
 
         form = PowerState()
         
 
+
         if form.validate_on_submit() :
 
+            rule = request.url_rule
+            print("+ROTA:",rule.rule)
             value=request.form
             print(value)
             rollValue=request.form.get('rollEggs')
@@ -299,6 +310,8 @@ def settings():
                 PowerState.lampState = SubmitField('OFF')  
                 socketio.emit('lamp', 'OFF')                 
         form = PowerState() 
+
+
         return render_template("settings.html",form=form,lastImage=lastImage)      
 
 @app.route('/about')
@@ -338,6 +351,7 @@ def handle_message(msg):
 @socketio.on('camera')
 def handle_message(image):
     global lastImage
+    global lastImageTime
     print('IMAGE RECEIVED',type(image.get('image_data')))
     print('')
     reponse=image.get('image_data')
@@ -345,10 +359,28 @@ def handle_message(image):
     lastImage=im
     im.save('static/img/piCameraImage.jpg')
 
-    emit('cameraRefresh', broadcast=True)     
+    emit('cameraRefresh', broadcast=True) 
+
+    if(time.time()-lastImageTime>10 and time.time()-lastImageTime<1600000000):    
+        print('CAMERA TIMEOUT')
+        emit('cameraTimeout')
+        lastImageTime=0
+
+
+@socketio.on('CameraViwed')    
+def handle_message(msg):
+    global lastImageTime
+    lastImageTime=int(time.time())
+    print()
+    print(msg,lastImageTime)
+    print()
+    
+
   
 
 global lastImage
+global lastImageTime
+lastImageTime=0
 lastImage=Image.open('static/img/piCameraImage.jpg')
 randomNumber=0
 global ds18b20Data
@@ -376,4 +408,3 @@ if __name__ == "__main__":
     # from waitress import serve
     # serve(app,host="0.0.0.0", port=5000)
     app.run(host="0.0.0.0", port="5000")
-
