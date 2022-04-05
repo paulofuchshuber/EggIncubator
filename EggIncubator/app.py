@@ -1,6 +1,8 @@
 from socket import socket
 from flask import Flask, render_template, request, url_for, redirect, session, g
 import boto3
+import pandas as pd
+import numpy as np
 import time
 import datetime
 from boto3.dynamodb.conditions import Key, Attr
@@ -224,9 +226,57 @@ def forms():
         return redirect(url_for('login'))
     else:
         #your code here  
+
                 
         lastPartitionKey=callManager('KeyManager')[-1]
+        
         getPair=queryData(lastPartitionKey)
+
+        resp_Query = table.query(KeyConditionExpression=Key('pkID').eq(lastPartitionKey))['Items']
+
+        print(type(resp_Query),len(resp_Query))
+        # print(resp_Query)
+
+        dumps=json.dumps(resp_Query)
+        print(type(dumps))
+        obj_DF = pd.DataFrame(json.loads(dumps))
+
+        
+        # obj_DF['TstampDateTime'] = (pd.to_datetime(obj_DF['Tstamp'],unit='s')) 
+        # obj_DF['TstampDateTime'] = obj_DF['TstampDateTime'].dt.strftime('%d-%m-%Y %I:%M:%S')
+        obj_DF['Tstamp'] = (pd.to_datetime(obj_DF['Tstamp'],unit='s')) 
+        obj_DF['Tstamp'] = obj_DF['Tstamp'].dt.strftime('%d-%m-%Y %I:%M:%S')
+        
+
+
+        obj_DF=obj_DF.drop(columns=['pkID'])
+
+        #divide em 2 dataframes e muda os headers
+        
+        set1 = obj_DF[["Tstamp", "Temperature"]]
+        set1 = set1.rename(columns={'Tstamp': 'x', 'Temperature': 'y'})
+
+        set2 = obj_DF[["Tstamp", "Humidity"]]
+        set2 = set2.rename(columns={'Tstamp': 'x', 'Humidity': 'y'})
+
+
+
+        # teste=obj_DF.to_dict('records')
+        set1=set1.to_dict('records')
+        set2=set2.to_dict('records')
+
+        # print(type(set1))      #tipo list
+        # print(type(set1[2]),list(set1))   #tipo dict
+
+        # print(getPair[1])   #tipo list
+        # print(type(getPair[1][2]))  #tipo dict
+        
+        print(list(set1))
+        # print("!")
+        # print("!")
+        # print("!")
+        print(list(set2))
+        
 
         form = chartsForm()
         form.selectChart.choices = callManager('KeyManager')        #form.selectChart.choices = [for choice in callManager()]
@@ -235,13 +285,16 @@ def forms():
             #print(type(form.selectChart.data))
             getPair = queryData(str(form.selectChart.data))
 
-        return render_template("forms.html", labels=getPair[0],values=getPair[1], valuesAgain=getPair[2], form=form)
+        #return render_template("forms.html", labels=getPair[0],values=getPair[1], valuesAgain=getPair[2], form=form)
+        
+
+        return render_template("forms.html", labels=list(obj_DF['Tstamp']),values=list(set1), valuesAgain=list(set2), form=form)
 
 def queryData(partitionKey):
     resp_Query = table.query(KeyConditionExpression=Key('pkID').eq(partitionKey))['Items']
     
 
-    print(resp_Query)
+    #print(resp_Query)
     #print(type(resp_Query[0]))
     
     Tstamps=[]
@@ -361,7 +414,7 @@ def handle_message(image):
 
     emit('cameraRefresh', broadcast=True) 
 
-    if(time.time()-lastImageTime>60 and time.time()-lastImageTime<1600000000):    
+    if(time.time()-lastImageTime>10 and time.time()-lastImageTime<1600000000):    
         print('CAMERA TIMEOUT')
         emit('cameraTimeout')
         lastImageTime=0
