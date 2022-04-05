@@ -138,12 +138,16 @@ def charts():
 
         lastPartitionKey=callManager('KeyManager2')[-1]
         getData = dynamoFunctions.genericQueryData(lastPartitionKey)
+        getData2 = dynamoFunctions.getChartData(lastPartitionKey)
          
 
         form = chartsForm()
+
+
         form.selectChart.choices = callManager('KeyManager2')        #form.selectChart.choices = [for choice in callManager()]
         if request.method == 'POST':
             getData = dynamoFunctions.genericQueryData(str(form.selectChart.data))  
+            getData2 = dynamoFunctions.getChartData(str(form.selectChart.data))
         
         dataInedexes=[]
         for index,title in enumerate(getData[0]):   
@@ -158,9 +162,55 @@ def charts():
 
         values=[]
         values=packToChartJS(getData[1],dataInedexes,titles)
+        values2=packFromDFToChartJS(getData2[2],getData2[0])
 
-        return render_template("charts.html",labels=labels,values=values, form=form)
+        # for i in values:
+        #     print(i)
+        #     print()        
+        # print("###")
+        # print("###")
+        # print("###")
         
+        # for i in values2:
+        #     print(i)
+        #     print()
+        
+
+        #return render_template("charts.html",labels=labels,values=values, form=form)
+        return render_template("charts.html",labels=getData2[1],values=values2, form=form)
+        
+
+def packFromDFToChartJS(Data,titles):
+    colors={
+        'Temperature':['#d9ca00'],
+        'Humidity':['#048000'],
+        'TemperatureExt':['#be8f6a'],
+        'HumidityExt':['#1bf505'],
+        'MaximumTemp':['rgba(231, 76, 60, 1)'],
+        'TemperatureAverage':['rgba(142, 68, 173, 1)'],
+        'MinimumTemp':['rgba(41, 128, 185, 1)'],
+        'Power':['rgba(0, 0, 0, 1)']
+    }
+    result=[]
+    n=0
+    for i in Data:        
+        colorAux=colors.get(titles[n]) or 'rgba(0, 0, 0, 1)'
+        #print(titles[i])
+        #print("CCCCC:",colorAux)
+        #print()
+        aux={
+            'label': titles[n],
+            'data': Data[n],
+            'backgroundColor': colorAux,
+            'borderColor': colorAux
+        }
+        result.append(aux)
+        n+=1
+        #print(aux)
+    #print(Data,Indexes)
+    return result
+
+
 def packToChartJS(Data,Indexes,titles):
     colors={
         'Temperature':['#d9ca00'],
@@ -172,13 +222,14 @@ def packToChartJS(Data,Indexes,titles):
         'MinimumTemp':['rgba(41, 128, 185, 1)'],
         'Power':['rgba(0, 0, 0, 1)']
     }
-    print(colors)
+    #print(colors)
     result=[]
     #print("TTTTTTTT", type(colors))
     for i in Indexes:        
         colorAux=colors.get(titles[i]) or 'rgba(0, 0, 0, 1)'
-        print(titles[i])
-        print("CCCCC:",colorAux)
+        #print(titles[i])
+        #print("CCCCC:",colorAux)
+        #print()
         aux={
             'label': titles[i],
             'data': Data[i],
@@ -186,7 +237,7 @@ def packToChartJS(Data,Indexes,titles):
             'borderColor': colorAux
         }
         result.append(aux)
-        print(aux)
+        #print(aux)
     #print(Data,Indexes)
     return result
 
@@ -229,67 +280,58 @@ def forms():
 
                 
         lastPartitionKey=callManager('KeyManager')[-1]
-        
-        getPair=queryData(lastPartitionKey)
+        myData=getData(lastPartitionKey)
 
-        resp_Query = table.query(KeyConditionExpression=Key('pkID').eq(lastPartitionKey))['Items']
-
-        print(type(resp_Query),len(resp_Query))
-        # print(resp_Query)
-
-        dumps=json.dumps(resp_Query)
-        print(type(dumps))
-        obj_DF = pd.DataFrame(json.loads(dumps))
-
-        
-        # obj_DF['TstampDateTime'] = (pd.to_datetime(obj_DF['Tstamp'],unit='s')) 
-        # obj_DF['TstampDateTime'] = obj_DF['TstampDateTime'].dt.strftime('%d-%m-%Y %I:%M:%S')
-        obj_DF['Tstamp'] = (pd.to_datetime(obj_DF['Tstamp'],unit='s')) 
-        obj_DF['Tstamp'] = obj_DF['Tstamp'].dt.strftime('%d-%m-%Y %I:%M:%S')
-        
-
-
-        obj_DF=obj_DF.drop(columns=['pkID'])
-
-        #divide em 2 dataframes e muda os headers
-        
-        set1 = obj_DF[["Tstamp", "Temperature"]]
-        set1 = set1.rename(columns={'Tstamp': 'x', 'Temperature': 'y'})
-
-        set2 = obj_DF[["Tstamp", "Humidity"]]
-        set2 = set2.rename(columns={'Tstamp': 'x', 'Humidity': 'y'})
-
-
-
-        # teste=obj_DF.to_dict('records')
-        set1=set1.to_dict('records')
-        set2=set2.to_dict('records')
-
-        # print(type(set1))      #tipo list
-        # print(type(set1[2]),list(set1))   #tipo dict
-
-        # print(getPair[1])   #tipo list
-        # print(type(getPair[1][2]))  #tipo dict
-        
-        print(list(set1))
-        # print("!")
-        # print("!")
-        # print("!")
-        print(list(set2))
-        
 
         form = chartsForm()
         form.selectChart.choices = callManager('KeyManager')        #form.selectChart.choices = [for choice in callManager()]
         if request.method == 'POST':
             #print("0000000000", form.selectChart.data)
             #print(type(form.selectChart.data))
-            getPair = queryData(str(form.selectChart.data))
-
-        #return render_template("forms.html", labels=getPair[0],values=getPair[1], valuesAgain=getPair[2], form=form)
+            myData = getData(str(form.selectChart.data))
+            print(str(form.selectChart.data))
         
 
-        return render_template("forms.html", labels=list(obj_DF['Tstamp']),values=list(set1), valuesAgain=list(set2), form=form)
+        return render_template("forms.html", labels=myData[0],values=myData[1], valuesAgain=myData[2], form=form)
 
+def getData(partitionKey):
+
+    resp_Query = table.query(KeyConditionExpression=Key('pkID').eq(partitionKey))['Items']
+
+    print(type(resp_Query),len(resp_Query))
+    # print(resp_Query)
+
+    dumps=json.dumps(resp_Query)
+    print(type(dumps))
+    obj_DF = pd.DataFrame(json.loads(dumps))
+
+    obj_DF=obj_DF.drop(columns=['pkID'])
+
+    obj_DF['Tstamp'] = (pd.to_datetime(obj_DF['Tstamp'],unit='s')) 
+    obj_DF['Tstamp'] = obj_DF['Tstamp'].dt.strftime('%d-%m-%Y %I:%M:%S')
+        
+    #divide em 2 dataframes e muda os headers
+        
+    set1 = obj_DF[["Tstamp", "Temperature"]]
+    set1 = set1.rename(columns={'Tstamp': 'x', 'Temperature': 'y'})
+
+    set2 = obj_DF[["Tstamp", "Humidity"]]
+    set2 = set2.rename(columns={'Tstamp': 'x', 'Humidity': 'y'})
+
+    # transforma em dict
+    set1=set1.to_dict('records')
+    set2=set2.to_dict('records')
+        
+    #confere no print
+    #print(list(set1))
+    # print("!")
+    # print("!")
+    # print("!")
+    #print(list(set2))
+
+    return (list(obj_DF['Tstamp']),list(set1),list(set2))
+
+####ESTA FUNÇÃO ABAIXO ESTÁ OBSOLETA
 def queryData(partitionKey):
     resp_Query = table.query(KeyConditionExpression=Key('pkID').eq(partitionKey))['Items']
     
