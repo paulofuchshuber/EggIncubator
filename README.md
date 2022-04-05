@@ -14,15 +14,6 @@ $pip install Flask
 $pip install boto3  
 $pip install awscli  
 $aws configure	#you have to put your credentials here  
-$pip install Pillow  
-$pip install opencv-python  
-$pip install flask-socketio  
-$pip install psutil  
-$pip install flask-wtf  
-$pip install flask-socketio  
-$pip install eventlet  
-$pip install gevent-websocket  
-$pip install Flask-Bootstrap  
 
 ### Run
 
@@ -43,17 +34,6 @@ $pip install Flask
 $pip install boto3  
 $pip install awscli  
 $aws configure	#you have to put your credentials here  
-$pip install opencv-python  
-$pip install Flask-BasicAuth  
-$pip install Pillow  
-$pip install picamera  
-$sudo apt-get install libatlas-base-dev  
-$sudo apt-get install libcblas-dev libhdf5-dev libhdf5-serial-dev libatlas-base-dev libjasper-dev libqtgui4 libqt4-test  
-$pip install RPi.GPIO  
-$pip install socketIO-client-2  
-$pip install flask-socketio  
-$pip install eventlet  
-$pip install picamera  
 
 #### DHT Sensor Library:  
 $git clone https://github.com/adafruit/Adafruit_Python_DHT.git  
