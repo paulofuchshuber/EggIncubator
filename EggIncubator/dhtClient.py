@@ -232,7 +232,7 @@ if __name__ == "__main__":
     startTimer1=0
     startTimer2=0
     global partitionKey
-    partitionKey='testeSocket3'
+    partitionKey='fill'
 
     checkPartitionKeys()
     print('enter')
