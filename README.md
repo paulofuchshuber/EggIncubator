@@ -9,10 +9,9 @@ uma interface gráfica com o usuário, os mesmos dados sensoriais são apresenta
 ### Requirements:
 
 $py -m venv env #create virtual environment  
-$env\Scripts\activate	#activate environment  
-$pip install Flask  
-$pip install boto3  
-$pip install awscli  
+$env\Scripts\activate	#activate environment   
+$CD EggIncubator  
+$pip install -r requirements.txt  
 $aws configure	#you have to put your credentials here  
 
 ### Run
@@ -30,9 +29,8 @@ $git clone https://github.com/phfuks/EggIncubator
 $sudo pip install virtualenv #install virtual environment  
 $python3 -m venv ./venv #create virtual envoironment  
 $source ./venv/bin/activate  
-$pip install Flask  
-$pip install boto3  
-$pip install awscli  
+$cd EggIncubator  
+$pip install -r requirements.txt  
 $aws configure	#you have to put your credentials here  
 
 #### DHT Sensor Library:  
