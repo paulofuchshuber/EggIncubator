@@ -1,5 +1,5 @@
 from socket import socket
-from flask import Flask, render_template, request, url_for, redirect, session, g
+from flask import Flask, render_template, request, url_for, redirect, session, g, send_file
 import boto3
 import pandas as pd
 import numpy as np
@@ -183,15 +183,13 @@ def packFromDFToChartJS(Data,titles):
     return result
 
 
-
 @app.route('/forms', methods=['GET','POST'])
 def forms():   
     if g.user is None:
         return redirect(url_for('login'))
     else:
         #your code here  
-
-                
+        
         lastPartitionKey=callManager('KeyManager')[-1]
         myData=getData(lastPartitionKey)
 
@@ -284,6 +282,12 @@ def settings():
 
         return render_template("settings.html",form=form,lastImage=lastImage)      
 
+
+@app.route('/pdf')
+def show_static_pdf():
+    with open('/static/files/file.pdf', 'rb') as static_file:
+        return send_file(static_file, attachment_filename='file.pdf')
+    
 @app.route('/about')
 def about():  
     if g.user is None:
