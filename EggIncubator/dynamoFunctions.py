@@ -16,6 +16,8 @@ def callManager(partitionKey):
         managerList = elem.get('List')  
         return (managerList)   
 
+
+###Essa função tem que sair daqui, ela é apenas do Client side
 def genericPutKW(pkID,Tstamp,**kwargs):  #put into dynamodb
     Item={
         'pkID':pkID,

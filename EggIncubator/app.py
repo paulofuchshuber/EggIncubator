@@ -183,65 +183,6 @@ def packFromDFToChartJS(Data,titles):
     return result
 
 
-def packToChartJS(Data,Indexes,titles):
-    colors={
-        'Temperature':['#d9ca00'],
-        'Humidity':['#048000'],
-        'TemperatureExt':['#be8f6a'],
-        'HumidityExt':['#1bf505'],
-        'MaximumTemp':['rgba(231, 76, 60, 1)'],
-        'TemperatureAverage':['rgba(142, 68, 173, 1)'],
-        'MinimumTemp':['rgba(41, 128, 185, 1)'],
-        'Power':['rgba(0, 0, 0, 1)']
-    }
-    #print(colors)
-    result=[]
-    #print("TTTTTTTT", type(colors))
-    for i in Indexes:        
-        colorAux=colors.get(titles[i]) or 'rgba(0, 0, 0, 1)'
-        #print(titles[i])
-        #print("CCCCC:",colorAux)
-        #print()
-        aux={
-            'label': titles[i],
-            'data': Data[i],
-            'backgroundColor': colorAux,
-            'borderColor': colorAux
-        }
-        result.append(aux)
-        #print(aux)
-    #print(Data,Indexes)
-    return result
-
-
-def getGraphData():
-    
-    #Scan
-    resp_Scan = table.scan(ProjectionExpression="Tstamp, Temperature, Humidity")['Items']
-
-    ScanList=[]    
-    for elem in resp_Scan:
-        ScanList.append(elem.values())
-    
-    PairedList =[]
-    for items in ScanList:
-        if (len(items)) == 3:
-            PairedList.append(list(items))
-    
-    PairedList.sort()  #ordena as informações
-
-    labels = []
-    values = []
-    valuesAgain=[]
-    for row in PairedList:
-        #print (row[0],":",row[1])
-    #   labels.append(str(row[0]))
-        labels.append(str(datetime.datetime.fromtimestamp(row[0])))
-        values.append(row[1])
-        valuesAgain.append(row[2])
-    
-
-    return (labels,values,valuesAgain)
 
 @app.route('/forms', methods=['GET','POST'])
 def forms():   
