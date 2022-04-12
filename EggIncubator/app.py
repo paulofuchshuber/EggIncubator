@@ -283,10 +283,6 @@ def settings():
         return render_template("settings.html",form=form,lastImage=lastImage)      
 
 
-@app.route('/pdf')
-def show_static_pdf():
-    with open('/static/files/file.pdf', 'rb') as static_file:
-        return send_file(static_file, attachment_filename='file.pdf')
     
 @app.route('/about')
 def about():  
