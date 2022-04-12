@@ -43,7 +43,7 @@ def before_request():
     g.user=None
     if 'user_id' in session: 
         g.user=User
-        print('###')
+        #print('###')
                   
 
 @app.route('/')
@@ -63,7 +63,7 @@ def login():
         password = request.form['password']
 
         if len(pkID) == 0:     #se o campo de login estiver nulo...
-            print("#: Digite um Email!")
+            #print("#: Digite um Email!")
             return redirect(url_for('login'))
 
         table = dynamodb.Table('EggIncubator')
@@ -100,7 +100,7 @@ def home():
         return redirect(url_for('login'))
     else:
         #your code here
-        print('1111111111111111111',session.get('user_id'))      
+        #print('1111111111111111111',session.get('user_id'))      
         return render_template("home.html")   
 
 
@@ -130,54 +130,26 @@ def callManager(partitionKey):
 
 @app.route('/charts', methods=['GET','POST'])
 def charts():
-    print(g.user)
+    #print(g.user)
     if g.user is None:
         return redirect(url_for('login'))
     else:
         #your code here  
 
-        lastPartitionKey=callManager('KeyManager2')[-1]
-        getData = dynamoFunctions.genericQueryData(lastPartitionKey)
-        getData2 = dynamoFunctions.getChartData(lastPartitionKey)
-         
+        if request.method != 'POST':
+            lastPartitionKey=callManager('KeyManager2')[-1]
+            getData = dynamoFunctions.getChartData(lastPartitionKey)
 
         form = chartsForm()
-
-
         form.selectChart.choices = callManager('KeyManager2')        #form.selectChart.choices = [for choice in callManager()]
+
         if request.method == 'POST':
-            getData = dynamoFunctions.genericQueryData(str(form.selectChart.data))  
-            getData2 = dynamoFunctions.getChartData(str(form.selectChart.data))
+            getData = dynamoFunctions.getChartData(str(form.selectChart.data))
+
         
-        dataInedexes=[]
-        for index,title in enumerate(getData[0]):   
-            if (title=="Tstamp"):
-                labels=getData[1][index]    #confere em titles qual a posição do timestamp e seta como lables
-            elif (title!="pkID"):
-                dataInedexes.append(index)  #array que informa os vetores de informações (Y axis)
+        values=packFromDFToChartJS(getData[2],getData[0])
 
-        titles=[]
-        for title in getData[0]:    #legendas, essa caca veio como 'set'
-            titles.append(title)
-
-        values=[]
-        values=packToChartJS(getData[1],dataInedexes,titles)
-        values2=packFromDFToChartJS(getData2[2],getData2[0])
-
-        # for i in values:
-        #     print(i)
-        #     print()        
-        # print("###")
-        # print("###")
-        # print("###")
-        
-        # for i in values2:
-        #     print(i)
-        #     print()
-        
-
-        #return render_template("charts.html",labels=labels,values=values, form=form)
-        return render_template("charts.html",labels=getData2[1],values=values2, form=form)
+        return render_template("charts.html",labels=getData[1],values=values, form=form)
         
 
 def packFromDFToChartJS(Data,titles):
@@ -298,11 +270,11 @@ def getData(partitionKey):
 
     resp_Query = table.query(KeyConditionExpression=Key('pkID').eq(partitionKey))['Items']
 
-    print(type(resp_Query),len(resp_Query))
+    #print(type(resp_Query),len(resp_Query))
     # print(resp_Query)
 
     dumps=json.dumps(resp_Query)
-    print(type(dumps))
+    #print(type(dumps))
     obj_DF = pd.DataFrame(json.loads(dumps))
 
     obj_DF=obj_DF.drop(columns=['pkID'])
@@ -384,13 +356,13 @@ def settings():
         if form.validate_on_submit() :
 
             rule = request.url_rule
-            print("+ROTA:",rule.rule)
+            #print("+ROTA:",rule.rule)
             value=request.form
-            print(value)
+            #print(value)
             rollValue=request.form.get('rollEggs')
-            print(rollValue)
+            #print(rollValue)
             lampValue=request.form.get('lampState')
-            print(lampValue)
+            #print(lampValue)
 
             if rollValue == 'LEFT':
                 PowerState.rollEggs = SubmitField('RIGHT')

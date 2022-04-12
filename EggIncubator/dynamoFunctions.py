@@ -25,18 +25,18 @@ def genericPutKW(pkID,Tstamp,**kwargs):  #put into dynamodb
         Item[k]=round(Decimal(v),2)
     table = dynamodb.Table('EggIncubator')
     response = table.put_item(Item=Item)
-    print("Inserted: ",Item)
+    #print("Inserted: ",Item)
         
 def getChartData(partitionKey):
 
     resp_Query = table.query(KeyConditionExpression=Key('pkID').eq(partitionKey))['Items']
 
-    print(type(resp_Query),len(resp_Query))
+    #print(type(resp_Query),len(resp_Query))
     # print(resp_Query)
 
 
     dumps=json.dumps(resp_Query, use_decimal=True)
-    print(type(dumps))
+    #print(type(dumps))
     obj_DF = pd.DataFrame(json.loads(dumps))
 
     obj_DF=obj_DF.drop(columns=['pkID'])
@@ -55,7 +55,7 @@ def getChartData(partitionKey):
     TstampsWoDup=obj_DF['Tstamp'].drop_duplicates()
 
     TstampsWithoutDuplicates=list(TstampsWoDup)
-    print(TstampsWithoutDuplicates)
+    #print(TstampsWithoutDuplicates)
 
     
     orderedPairs=[]
@@ -72,7 +72,7 @@ def getChartData(partitionKey):
             orderedPairs[pos]=orderedPairs[pos].to_dict('records')
             pos+=1
 
-    print(labels)
+    #print(labels)
    
 
     return (labels,TstampsWithoutDuplicates,orderedPairs)
@@ -80,7 +80,7 @@ def getChartData(partitionKey):
 
 def genericQueryData(partitionKey):
     resp_Query = table.query(KeyConditionExpression=Key('pkID').eq(partitionKey))['Items']
-    print("000000000000000000000000000000000000")
+    
     titles=returnTitles(resp_Query)
     #print(titles)
     splittedData=splitData(titles,resp_Query)
@@ -106,7 +106,6 @@ def splitData(titles,Data):
     
     dataVector= [[] for _ in range(len(titles))]
 
-    print("$$$$$$$$")
     
     for index, item in enumerate(Data):            #Aqui que realmente separa os dados
             # print(index,item)
