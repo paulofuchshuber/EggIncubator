@@ -294,44 +294,8 @@ def getData(partitionKey):
     set1=set1.to_dict('records')
     set2=set2.to_dict('records')
         
-    #confere no print
-    #print(list(set1))
-    # print("!")
-    # print("!")
-    # print("!")
-    #print(list(set2))
-
     return (list(obj_DF['Tstamp']),list(set1),list(set2))
 
-####ESTA FUNÇÃO ABAIXO ESTÁ OBSOLETA
-def queryData(partitionKey):
-    resp_Query = table.query(KeyConditionExpression=Key('pkID').eq(partitionKey))['Items']
-    
-
-    #print(resp_Query)
-    #print(type(resp_Query[0]))
-    
-    Tstamps=[]
-    Temperatures=[]
-    Humidities=[]
-
-    for elem in resp_Query:
-        Tstamps.append(str(datetime.datetime.fromtimestamp(int(elem.get('Tstamp')))))
-        #Tstamps.append(str(datetime.datetime.fromtimestamp(int(elem.get('Tstamp'))+10)))
-        # Temperatures.append(elem.get('Temperature'))    
-        # Humidities.append(elem.get('Humidity'))    
-        HumiditiesAux = {
-            'x': str(datetime.datetime.fromtimestamp(int(elem.get('Tstamp')))),
-            'y': elem.get('Humidity')
-        } 
-        Humidities.append(HumiditiesAux)
-        TemperaturesAux = {
-            'x': str(datetime.datetime.fromtimestamp(int(elem.get('Tstamp')))),
-            'y': elem.get('Temperature')
-        } 
-        Temperatures.append(TemperaturesAux)
-
-    return (Tstamps,Temperatures,Humidities)
     
 class PowerState(FlaskForm) :
     rollEggs = SubmitField('LEFT')    
@@ -350,8 +314,6 @@ def settings():
         global lastImage
 
         form = PowerState()
-        
-
 
         if form.validate_on_submit() :
 
