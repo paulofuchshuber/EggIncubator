@@ -43,16 +43,21 @@ def before_request():
     g.user=None
     if 'user_id' in session: 
         g.user=User
-        #print('###')
+        # print('#')
+        # print(session)
+        #print(request.path)
                   
 
 @app.route('/')
 def main():    
+    #dynamoFunctions.genericPutStrW('anonimo',"UserActivity#"+str(int(time.time())),route=str(request.path))
+    print('anonimo - inserted')
     return redirect(url_for('login'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():        
+    dynamoFunctions.genericPutStrW('anonimo',"UserActivity#"+str(int(time.time())),route=str(request.path),ip=request.remote_addr)
     g.user=None
     for key in list(session.keys()):
         session.pop(key)
@@ -96,11 +101,14 @@ def login():
 
 @app.route('/home')
 def home():
+    print('\n',request.path)
     if g.user is None:
         return redirect(url_for('login'))
     else:
         #your code here
-        #print('1111111111111111111',session.get('user_id'))      
+        #print('1111111111111111111',session.get('user_id'))     
+        dynamoFunctions.genericPutStrW(session['user_id'],"UserActivity#"+str(int(time.time())),route=str(request.path),ip=request.remote_addr)
+        print("pkID = ",session['user_id']," - Inserted activity") 
         return render_template("home.html")   
 
 
@@ -109,6 +117,8 @@ def components():
     if g.user is None:
         return redirect(url_for('login'))
     else:
+        dynamoFunctions.genericPutStrW(session['user_id'],"UserActivity#"+str(int(time.time())),route=str(request.path),ip=request.remote_addr)
+        print("pkID = ",session['user_id']," - Inserted activity")
         global randomNumber
         #your code here
         #randomNumber=round(38+(random.random()/10),2)
@@ -135,7 +145,7 @@ def charts():
         return redirect(url_for('login'))
     else:
         #your code here  
-
+        dynamoFunctions.genericPutStrW(session['user_id'],"UserActivity#"+str(int(time.time())),route=str(request.path),ip=request.remote_addr)
         if request.method != 'POST':
             lastPartitionKey=callManager('KeyManager2')[-1]
             getData = dynamoFunctions.getChartData(lastPartitionKey)
@@ -189,7 +199,8 @@ def forms():
         return redirect(url_for('login'))
     else:
         #your code here  
-        
+        dynamoFunctions.genericPutStrW(session['user_id'],"UserActivity#"+str(int(time.time())),route=str(request.path),ip=request.remote_addr)
+
         lastPartitionKey=callManager('KeyManager')[-1]
         myData=getData(lastPartitionKey)
 
@@ -245,7 +256,8 @@ def settings():
     if g.user is None:
         return redirect(url_for('login'))
     else:
-        #your code here     
+        #your code here  
+        dynamoFunctions.genericPutStrW(session['user_id'],"UserActivity#"+str(int(time.time())),route=str(request.path),ip=request.remote_addr)   
         currentPage = request.url_rule
         print("start camera:",currentPage)
         socketio.emit('startCamera') 
@@ -290,6 +302,7 @@ def about():
         return redirect(url_for('login'))
     else:
         #your code here    
+        dynamoFunctions.genericPutStrW(session['user_id'],"UserActivity#"+str(int(time.time())),route=str(request.path),ip=request.remote_addr)
         return render_template("about.html")   
 
 @socketio.on('message')

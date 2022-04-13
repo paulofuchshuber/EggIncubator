@@ -16,18 +16,29 @@ def callManager(partitionKey):
         managerList = elem.get('List')  
         return (managerList)   
 
-
-###Essa função tem que sair daqui, ela é apenas do Client side
-def genericPutKW(pkID,Tstamp,**kwargs):  #put into dynamodb
+#this function is just for decimal values
+def genericPutKW(pkID,Tstamp,**kwargs):  #put into dynamodb 
     Item={
         'pkID':pkID,
         'Tstamp' : Tstamp
         }
     for k,v in kwargs.items():
-        Item[k]=round(Decimal(v),2)
+        Item[k]=round(Decimal(v),2)         #not that: it converts to .xx decimal values
     table = dynamodb.Table('EggIncubator')
     response = table.put_item(Item=Item)
     #print("Inserted: ",Item)
+
+#this function is for string values
+def genericPutStrW(pkID,Tstamp,**kwargs):  #put into dynamodb 
+    Item={
+        'pkID':pkID,
+        'Tstamp' : Tstamp
+        }
+    for k,v in kwargs.items():
+         Item[k]=str(v)
+    table = dynamodb.Table('EggIncubator')
+    response = table.put_item(Item=Item)
+    #print("Inserted: ",Item)    
         
 def getChartData(partitionKey):
 
